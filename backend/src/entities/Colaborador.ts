@@ -1,7 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { Turno } from "../types/turno.js";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Jornada } from "./Jornada.js";
+import { join } from "node:path";
 
-@Entity("colaborador")
+@Entity("colaboradores")
 export class Colaborarador {
     @PrimaryGeneratedColumn("uuid")
     id!: string
@@ -18,11 +19,12 @@ export class Colaborarador {
     @Column({type: "varchar", nullable: false})
     setor!: string
 
-    @Column({type: "enum", enum: Turno})
-    turno!: Turno
-
     @Column({type: "boolean"})
     ativo!: boolean
+
+    @ManyToOne(() => Jornada, (jornada) => jornada.colaboradores)
+    @JoinColumn({name: "jornada_id"})
+    jornada!: Jornada
 
 
 }
