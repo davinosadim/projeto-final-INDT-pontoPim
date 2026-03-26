@@ -1,6 +1,6 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Jornada } from "./Jornada.js";
-import { join } from "node:path";
+import { RegistroPonto } from "./RegistroPonto.js";
 
 @Entity("colaboradores")
 export class Colaborarador {
@@ -25,6 +25,11 @@ export class Colaborarador {
     @ManyToOne(() => Jornada, (jornada) => jornada.colaboradores)
     @JoinColumn({name: "jornada_id"})
     jornada!: Jornada
+
+    @OneToMany(() => RegistroPonto, (registros) => registros.colaborador)
+    registros!: RegistroPonto[]
+
+
 
 
 }
