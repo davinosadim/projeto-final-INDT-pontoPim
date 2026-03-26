@@ -21,5 +21,8 @@ export class Colaborarador {
     @Column({type: "enum", enum: Turno})
     turno!: Turno
 
+    @Column({type: "boolean"})
+    ativo!: boolean
+
 
 }
