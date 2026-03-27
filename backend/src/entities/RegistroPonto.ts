@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Colaborarador } from "./Colaborador.js";
+import { Colaborador } from "./Colaborador.js";
 import { TiposRegistros } from "../types/registros.js";
 import { Origem } from "../types/origem.js";
 
@@ -9,9 +9,9 @@ export class RegistroPonto {
     @PrimaryGeneratedColumn("uuid")
     id!:string
 
-    @ManyToOne(() => Colaborarador, (colaborador) => colaborador.registros)
+    @ManyToOne(() => Colaborador, (colaborador) => colaborador.registros)
     @JoinColumn({name: "colaborador_id"})
-    colaborador!: Colaborarador
+    colaborador!: Colaborador
 
     @Column({type: "enum", enum: TiposRegistros})
     tipo!: TiposRegistros

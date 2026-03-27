@@ -1,7 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Turno } from "../types/turno.js";
-
-import { Colaborarador } from "./Colaborador.js";
+import { Colaborador } from "./Colaborador.js";
 
 
 
@@ -22,7 +21,7 @@ export class Jornada {
     @Column({type: "time", nullable: false})
     horarioSaida!: string
 
-    @OneToMany(() => Colaborarador, (colaborador) => colaborador.jornada)
-    colaboradores!: Colaborarador[]
+    @OneToMany(() => Colaborador, (colaborador) => colaborador.jornada)
+    colaboradores!: Colaborador[]
 
 }

@@ -2,9 +2,10 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColum
 import { Jornada } from "./Jornada.js";
 import { RegistroPonto } from "./RegistroPonto.js";
 import { ResumoDiario } from "./ResumoDiario.js";
+import { AjustePonto } from "./AjustePonto.js";
 
 @Entity("colaboradores")
-export class Colaborarador {
+export class Colaborador {
     @PrimaryGeneratedColumn("uuid")
     id!: string
 
@@ -32,6 +33,9 @@ export class Colaborarador {
 
     @OneToMany(() => ResumoDiario, (resumo) => resumo.colaborador)
     resumos!: ResumoDiario[]
+
+    @OneToMany(() => AjustePonto, (ajuste) => ajuste.colaborador)
+    ajustes!: AjustePonto[]
 
 
 

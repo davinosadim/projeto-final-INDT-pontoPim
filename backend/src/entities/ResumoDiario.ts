@@ -1,5 +1,5 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Colaborarador } from "./Colaborador.js";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Colaborador } from "./Colaborador.js";
 import { Status } from "../types/status.js";
 
 
@@ -9,9 +9,9 @@ export class ResumoDiario {
     @PrimaryGeneratedColumn("uuid")
     id!: string
 
-    @ManyToOne(() => Colaborarador, (colaborador) => colaborador.resumos)
+    @ManyToOne(() => Colaborador, (colaborador) => colaborador.resumos)
     @JoinColumn({name: "colaborador_id"})
-    colaborador!: Colaborarador
+    colaborador!: Colaborador
 
     @Column({type: "date", nullable: false})
     data!: Date
