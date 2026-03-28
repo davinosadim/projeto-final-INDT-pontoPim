@@ -1,5 +1,7 @@
-import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Colaborador } from "./Colaborador.js";
+import { User } from "./User.js";
+import { Status } from "../types/status.js";
 
 
 @Entity("ajustesPonto")
@@ -10,4 +12,19 @@ export class AjustePonto {
     @ManyToOne(() => Colaborador, (colaborador) => colaborador.ajustes)
     @JoinColumn({name: "colaborador_id"})
     colaborador!: Colaborador
+
+    @Column({type: "date", nullable: false})
+    data!: Date
+
+    @Column({type: "varchar"})
+    motivo!: string
+
+    @ManyToOne(() => User, (user) => user.ajustesAprovador, { nullable: true})
+    @JoinColumn({name: "aprovado_por"})
+    aprovadoPor!: User
+
+    @Column({type: "enum", enum: Status})
+    status!: Status
+
+
 }

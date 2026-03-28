@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { UserRole } from "../types/roles.js";
 import { RegistroPonto } from "./RegistroPonto.js";
+import { AjustePonto } from "./AjustePonto.js";
 
 
 @Entity("users")
@@ -25,6 +26,9 @@ export class User {
 
     // @OneToMany(() => RegistroPonto, (registro) => registro.)
     // registroFeitos!: RegistroPonto[]
+
+    @OneToMany(() => AjustePonto, (ajuste) => ajuste.aprovadoPor)
+    ajustesAprovador!: AjustePonto[]
 
 
     
