@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Colaborador } from "./Colaborador.js";
-import { User } from "./User.js";
-import { Status } from "../types/status.js";
+import { Colaborador } from "./Colaborador";
+import { User } from "./User";
+import { Status } from "../types/status";
 
 
 @Entity("ajustesPonto")

@@ -1,8 +1,8 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Jornada } from "./Jornada.js";
-import { RegistroPonto } from "./RegistroPonto.js";
-import { ResumoDiario } from "./ResumoDiario.js";
-import { AjustePonto } from "./AjustePonto.js";
+import { Jornada } from "./Jornada";
+import { RegistroPonto } from "./RegistroPonto";
+import { ResumoDiario } from "./ResumoDiario";
+import { AjustePonto } from "./AjustePonto";
 
 @Entity("colaboradores")
 export class Colaborador {

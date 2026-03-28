@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Turno } from "../types/turno.js";
-import { Colaborador } from "./Colaborador.js";
+import { Turno } from "../types/turno";
+import { Colaborador } from "./Colaborador";
 
 
 

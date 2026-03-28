@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { UserRole } from "../types/roles.js";
-import { RegistroPonto } from "./RegistroPonto.js";
-import { AjustePonto } from "./AjustePonto.js";
+import { UserRole } from "../types/roles";
+import { RegistroPonto } from "./RegistroPonto";
+import { AjustePonto } from "./AjustePonto";
 
 
 @Entity("users")

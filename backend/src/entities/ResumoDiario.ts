@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Colaborador } from "./Colaborador.js";
-import { Status } from "../types/status.js";
+import { Colaborador } from "./Colaborador";
+import { Status } from "../types/status";
 
 
 @Entity("resumosDiarios")

@@ -1,8 +1,8 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Colaborador } from "./Colaborador.js";
-import { TiposRegistros } from "../types/registros.js";
-import { Origem } from "../types/origem.js";
-import { User } from "./User.js";
+import { Colaborador } from "./Colaborador";
+import { TiposRegistros } from "../types/registros";
+import { Origem } from "../types/origem";
+import { User } from "./User";
 
 
 @Entity("registrosPontos")

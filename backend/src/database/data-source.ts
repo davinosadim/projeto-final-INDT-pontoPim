@@ -1,10 +1,14 @@
+import "reflect-metadata"
 import { DataSource } from "typeorm";
-import { Colaborador } from "../entities/Colaborador.js";
-import { Jornada } from "../entities/Jornada.js";
-import { RegistroPonto } from "../entities/RegistroPonto.js";
-import { AjustePonto } from "../entities/AjustePonto.js";
-import { ResumoDiario } from "../entities/ResumoDiario.js";
-import { User } from "../entities/User.js";
+import * as dotenv from "dotenv"
+import { Colaborador } from "../entities/Colaborador";
+import { Jornada } from "../entities/Jornada";
+import { RegistroPonto } from "../entities/RegistroPonto";
+import { AjustePonto } from "../entities/AjustePonto";
+import { ResumoDiario } from "../entities/ResumoDiario";
+import { User } from "../entities/User";
+
+dotenv.config()
 
 export const appDataSource = new DataSource({
     type: "postgres",
