@@ -1,7 +1,10 @@
 import { DataSource } from "typeorm";
-import { Colaborarador } from "../entities/Colaborador.js";
+import { Colaborador } from "../entities/Colaborador.js";
 import { Jornada } from "../entities/Jornada.js";
 import { RegistroPonto } from "../entities/RegistroPonto.js";
+import { AjustePonto } from "../entities/AjustePonto.js";
+import { ResumoDiario } from "../entities/ResumoDiario.js";
+import { User } from "../entities/User.js";
 
 export const appDataSource = new DataSource({
     type: "postgres",
@@ -12,7 +15,7 @@ export const appDataSource = new DataSource({
     database: process.env.DB_DATABASE as string,
     synchronize: true,
     logging: false,
-    entities: [Colaborarador, Jornada, RegistroPonto],
+    entities: [Colaborador, Jornada, RegistroPonto, AjustePonto, ResumoDiario, User],
     migrations: [],
     subscribers: []
     
