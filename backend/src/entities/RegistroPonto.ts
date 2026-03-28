@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "t
 import { Colaborador } from "./Colaborador.js";
 import { TiposRegistros } from "../types/registros.js";
 import { Origem } from "../types/origem.js";
+import { User } from "./User.js";
 
 
 @Entity("registrosPontos")
@@ -24,4 +25,8 @@ export class RegistroPonto {
 
     @Column({type: "varchar", nullable: false})
     justificativa!: string | null
+
+    @ManyToOne(() => User, (user) => user.registroFeitos, { nullable: true})
+    @JoinColumn({name: "registrado_por"})
+    registradoPor!: User
 }

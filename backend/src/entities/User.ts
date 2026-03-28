@@ -24,8 +24,8 @@ export class User {
     @Column()
     setor!: string
 
-    // @OneToMany(() => RegistroPonto, (registro) => registro.)
-    // registroFeitos!: RegistroPonto[]
+    @OneToMany(() => RegistroPonto, (registro) => registro.registradoPor)
+    registroFeitos!: RegistroPonto[]
 
     @OneToMany(() => AjustePonto, (ajuste) => ajuste.aprovadoPor)
     ajustesAprovador!: AjustePonto[]
