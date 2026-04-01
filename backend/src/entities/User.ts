@@ -1,7 +1,8 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { UserRole } from "../types/roles";
 import { RegistroPonto } from "./RegistroPonto";
 import { AjustePonto } from "./AjustePonto";
+import { Colaborador } from "./Colaborador";
 
 
 @Entity("users")
@@ -12,8 +13,9 @@ export class User {
     @Column()
     nome!: string
 
-    @Column({unique: true})
-    matricula!: string
+    @OneToOne(() => Colaborador, (colaborador) => colaborador.user)
+    @JoinColumn({name: "colaborador_id"})
+    colaborador!: Colaborador
 
     @Column()
     senha!: string

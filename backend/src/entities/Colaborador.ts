@@ -1,8 +1,9 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Jornada } from "./Jornada";
 import { RegistroPonto } from "./RegistroPonto";
 import { ResumoDiario } from "./ResumoDiario";
 import { AjustePonto } from "./AjustePonto";
+import { User } from "./User";
 
 @Entity("colaboradores")
 export class Colaborador {
@@ -14,6 +15,9 @@ export class Colaborador {
     
     @Column({type: "varchar", nullable: false, unique: true})
     matricula!: string
+
+    @OneToOne(() => User, (user) => user.colaborador)
+    user!: User
 
     @Column({type: "varchar", nullable: false})
     cargo!: string
