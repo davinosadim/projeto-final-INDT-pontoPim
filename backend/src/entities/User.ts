@@ -5,6 +5,7 @@ import { AjustePonto } from "./AjustePonto";
 import { Colaborador } from "./Colaborador";
 
 
+
 @Entity("users")
 export class User {
     @PrimaryGeneratedColumn("uuid")
@@ -16,6 +17,9 @@ export class User {
     @OneToOne(() => Colaborador, (colaborador) => colaborador.user)
     @JoinColumn({name: "colaborador_id"})
     colaborador!: Colaborador
+
+    @Column({unique: true, nullable: false})
+    email!: string
 
     @Column()
     senha!: string
