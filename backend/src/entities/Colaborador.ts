@@ -4,6 +4,7 @@ import { RegistroPonto } from "./RegistroPonto";
 import { ResumoDiario } from "./ResumoDiario";
 import { AjustePonto } from "./AjustePonto";
 import { User } from "./User";
+import { Setores } from "./Setor";
 
 @Entity("colaboradores")
 export class Colaborador {
@@ -40,6 +41,10 @@ export class Colaborador {
 
     @OneToMany(() => AjustePonto, (ajuste) => ajuste.colaborador)
     ajustes!: AjustePonto[]
+
+    @ManyToOne(() => Setores, (setor) => setor.colaboradores)
+    @JoinColumn({name: "setor_id"})
+    setores!: Setores
 
 
 

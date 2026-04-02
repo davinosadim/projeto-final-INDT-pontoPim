@@ -17,7 +17,8 @@ export const createUserSchema = z.object({
     .refine((s) => /[0-9]/.test(s), {
         error: "A senha deve conter ao menos 1 numero"
     }),
-    role: z.enum(UserRole)
+    role: z.enum(UserRole),
+    setor_id: z.uuid()
 
 })
 
