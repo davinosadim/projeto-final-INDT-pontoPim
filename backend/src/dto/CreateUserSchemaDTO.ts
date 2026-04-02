@@ -18,7 +18,7 @@ export const createUserSchema = z.object({
         error: "A senha deve conter ao menos 1 numero"
     }),
     role: z.enum(UserRole),
-    setor_id: z.uuid()
+    setorId: z.uuid()
 
 })
 
