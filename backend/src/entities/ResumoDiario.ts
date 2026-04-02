@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Colaborador } from "./Colaborador";
-import { Status } from "../types/status";
+import { StatusResumo } from "../types/statusResumo";
 
 
 @Entity("resumosDiarios")
@@ -28,6 +28,6 @@ export class ResumoDiario {
     @Column({type: "int", nullable: false, default: 0})
     atrasoMinutos!: number
 
-    @Column({type: "enum", enum: Status})
-    status!: Status
+    @Column({type: "enum", enum: StatusResumo})
+    status!: StatusResumo
 }

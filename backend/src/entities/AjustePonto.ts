@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Colaborador } from "./Colaborador";
 import { User } from "./User";
-import { Status } from "../types/status";
+import { StatusAjuste } from "../types/statusAjuste";
 
 
 @Entity("ajustesPonto")
@@ -23,8 +23,8 @@ export class AjustePonto {
     @JoinColumn({name: "aprovado_por"})
     aprovadoPor!: User
 
-    @Column({type: "enum", enum: Status})
-    status!: Status
+    @Column({type: "enum", enum: StatusAjuste})
+    status!: StatusAjuste
 
 
 }
