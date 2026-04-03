@@ -33,4 +33,4 @@ export const createColaboradorSchema = z.object({
     }
 })
 
-export type CreateColaboradorSchema = z.infer<typeof createColaboradorSchema>
+export type CreateColaboradorSchemaDTO = z.infer<typeof createColaboradorSchema>
