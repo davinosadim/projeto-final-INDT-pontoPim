@@ -32,3 +32,5 @@ export const createColaboradorSchema = z.object({
         })
     }
 })
+
+export type CreateColaboradorSchema = z.infer<typeof createColaboradorSchema>

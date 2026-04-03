@@ -14,8 +14,4 @@ export const createAjustePontoSchema = z.object({
     .min(1,"Motivo obrigatorio")
     .max(255, "Motivo muito longo"),
 
-    status: z.enum(StatusAjuste).default(StatusAjuste.PENDENTE)
-
-
-
 })
