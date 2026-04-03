@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { StatusResumo } from "../types/statusResumo"
+import { StatusResumo } from "../../types/statusResumo"
 
 export const resumoDiariSchemaDTO = z.object({
     colaboradorId: z.uuid("Colaborador invalido"),
