@@ -1,4 +1,4 @@
-import { custom, z } from "zod"
+import { z } from "zod"
 import { Turno } from "../types/turno"
 import { converterHorarioParaMinutos } from "../utils/time"
 

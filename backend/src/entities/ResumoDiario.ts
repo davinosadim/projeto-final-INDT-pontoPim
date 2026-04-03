@@ -3,7 +3,7 @@ import { Colaborador } from "./Colaborador";
 import { StatusResumo } from "../types/statusResumo";
 
 
-@Entity("resumosDiarios")
+@Entity("resumos_diarios")
 export class ResumoDiario {
 
     @PrimaryGeneratedColumn("uuid")
