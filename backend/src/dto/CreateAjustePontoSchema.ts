@@ -21,7 +21,7 @@ export type CreateAjustePontoSchemaDTO = z.infer<typeof createAjustePontoSchema>
 export const updateStatusAjustePonto = z.object({
     status: z.enum(StatusAjuste),
     aprovadoPor: z.uuid("aprovador invalido"),
-    comentario: z.string().trim().max(255, "Comentario muito longo").nullable()
+    comentario: z.string().trim().min(1, "Motivo obrigatorio").max(255, "Comentario muito longo").nullable()
 }).superRefine((data, ctx) => {
     if (data.status === StatusAjuste.REJEITADO && !data.comentario) {
         ctx.addIssue({
