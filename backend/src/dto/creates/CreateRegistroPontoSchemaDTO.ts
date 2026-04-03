@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { TiposRegistros } from "../types/registros"
+import { TiposRegistros } from "../../types/registros"
 
 export const createRegistroPontoSchemaDTO = z.object({
     colaboradorId: z.uuid("Colaborador invalido"),

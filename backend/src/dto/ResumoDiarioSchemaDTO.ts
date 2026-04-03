@@ -23,7 +23,9 @@ export const resumoDiariSchemaDTO = z.object({
     .int("Atraso deve ser um numero inteiro")
     .min(0, "Atraso nao pode ser negativo"),
 
-    status: z.enum(StatusResumo)
+    status: z.enum(StatusResumo, {
+        error: "Status invalido"
+    })
 })
 
 export type ResumoDiaripSchemaDTO = z.infer<typeof resumoDiariSchemaDTO>

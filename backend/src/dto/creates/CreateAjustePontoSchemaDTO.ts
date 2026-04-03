@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { StatusAjuste } from "../types/statusAjuste"
+import { StatusAjuste } from "../../types/statusAjuste"
 
 export const createAjustePontoSchema = z.object({
     colaboradorId: z.uuid("colaboradorId invalido"),

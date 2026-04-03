@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { UserRole } from "../types/roles"
+import { UserRole } from "../../types/roles"
 
 
 export const createUserSchema = z.object({
