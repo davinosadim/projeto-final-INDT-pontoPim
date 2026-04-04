@@ -4,7 +4,7 @@ import { User } from "./User";
 import { StatusAjuste } from "../types/statusAjuste";
 
 
-@Entity("ajustesPonto")
+@Entity("ajustes_ponto")
 export class AjustePonto {
     @PrimaryGeneratedColumn("uuid")
     id!: string
