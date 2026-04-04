@@ -8,7 +8,7 @@ export class Setores {
     @PrimaryGeneratedColumn("uuid")
     id!: string
 
-    @Column({type: "varchar", unique: true, name:"nome_Setor"})
+    @Column({type: "enum", enum: Setores, unique: true, name:"nome_Setor"})
     nomeSetor!: string
 
     @OneToMany(() => Colaborador, (colaborador) => colaborador.setores)
