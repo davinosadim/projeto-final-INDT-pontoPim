@@ -7,14 +7,14 @@
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "commonjs",
+    "module": "node16",
     "target": "es2020",
     "types": [],
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],
     // and npm install -D @types/node
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
 
     // Other Outputs
     "sourceMap": true,

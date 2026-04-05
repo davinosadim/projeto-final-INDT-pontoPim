@@ -4,6 +4,9 @@ import { RegistroPonto } from "./RegistroPonto";
 import { ResumoDiario } from "./ResumoDiario";
 import { AjustePonto } from "./AjustePonto";
 import { User } from "./User";
+import { Setores } from "../types/setores";
+import { Turno } from "../types/turno";
+import { Cargos } from "../types/cargos";
 
 @Entity("colaboradores")
 export class Colaborador {
@@ -19,11 +22,14 @@ export class Colaborador {
     @OneToOne(() => User, (user) => user.colaborador)
     user!: User
 
-    @Column({type: "varchar", nullable: false})
-    cargo!: string
+    @Column({type: "enum", enum: Cargos, nullable: false})
+    cargo!: Cargos
 
-    @Column({type: "varchar", nullable: false})
-    setor!: string
+    @Column({type: "enum", enum: Setores, nullable: false})
+    setor!: Setores
+
+    @Column({type: "enum", enum: Turno})
+    turno!: Turno
 
     @Column({type: "boolean"})
     ativo!: boolean
@@ -40,7 +46,6 @@ export class Colaborador {
 
     @OneToMany(() => AjustePonto, (ajuste) => ajuste.colaborador)
     ajustes!: AjustePonto[]
-
 
 
 

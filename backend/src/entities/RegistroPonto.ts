@@ -5,7 +5,7 @@ import { Origem } from "../types/origem";
 import { User } from "./User";
 
 
-@Entity("registrosPontos")
+@Entity("registros_pontos")
 export class RegistroPonto {
     @PrimaryGeneratedColumn("uuid")
     id!:string
@@ -23,10 +23,10 @@ export class RegistroPonto {
     @Column({type: "enum", enum: Origem, default: Origem.SISTEMA})
     origem!: Origem
 
-    @Column({type: "varchar", nullable: false})
+    @Column({type: "text", nullable: true})
     justificativa!: string | null
 
     @ManyToOne(() => User, (user) => user.registroFeitos, { nullable: true})
     @JoinColumn({name: "registrado_por"})
-    registradoPor!: User
+    registradoPor!: User | null
 }
