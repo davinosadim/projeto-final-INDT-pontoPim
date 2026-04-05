@@ -1,9 +1,10 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Cargos } from "../types/cargos";
 
 
 
 @Entity("cargos")
-export class Cargos {
+export class Cargo {
     @PrimaryGeneratedColumn("uuid")
     id!: string
 

@@ -7,7 +7,8 @@ import { RegistroPonto } from "../entities/RegistroPonto";
 import { AjustePonto } from "../entities/AjustePonto";
 import { ResumoDiario } from "../entities/ResumoDiario";
 import { User } from "../entities/User";
-import { Setores } from "../entities/Setor";
+import { Setor } from "../entities/Setor";
+import { Cargo } from "../entities/Cargos";
 
 dotenv.config()
 
@@ -20,7 +21,7 @@ export const appDataSource = new DataSource({
     database: process.env.DB_DATABASE as string,
     synchronize: true,
     logging: false,
-    entities: [Colaborador, Jornada, RegistroPonto, AjustePonto, ResumoDiario, User, Setores],
+    entities: [Colaborador, Jornada, RegistroPonto, AjustePonto, ResumoDiario, User, Setor, Cargo ],
     migrations: [],
     subscribers: []
     
