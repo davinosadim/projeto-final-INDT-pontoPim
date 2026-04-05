@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./User";
 
 
@@ -11,7 +11,8 @@ export class RefreshToken {
     @Column({type: "varchar", unique: true})
     jti!: string
 
-    @ManyToOne(() => User, (user) => user)
+    @ManyToOne(() => User, (user) => user.tokens, { onDelete: "CASCADE"})
+    @JoinColumn({name: "token_id"})
     user!: User
 
     @CreateDateColumn()

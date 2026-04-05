@@ -1,8 +1,9 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { UserRole } from "../types/roles";
 import { RegistroPonto } from "./RegistroPonto";
 import { AjustePonto } from "./AjustePonto";
 import { Colaborador } from "./Colaborador";
+import { RefreshToken } from "./RefreshToken";
 
 
 
@@ -35,6 +36,13 @@ export class User {
 
     @OneToMany(() => AjustePonto, (ajuste) => ajuste.aprovadoPor)
     ajustesAprovador!: AjustePonto[]
+
+    @OneToMany(() => RefreshToken, (token) => token.user)
+    tokens!: RefreshToken[]
+
+
+    @CreateDateColumn()
+    createdAt!: Date
 
 
     
