@@ -1,6 +1,8 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Colaborador } from "./Colaborador";
 import { StatusResumo } from "../types/statusResumo";
+import { Jornada } from "./Jornada";
+import { join } from "node:path";
 
 
 @Entity("resumos_diarios")
@@ -19,8 +21,9 @@ export class ResumoDiario {
     @Column({type: "numeric", nullable: false, default: 0})
     horasTrabalhadas!: number
 
-    @Column({type: "numeric", nullable: false})
-    horasEsperadas!: number
+    @ManyToOne(() => Jornada, (jornada) => jornada.resumos)
+    @JoinColumn({name: "jornada_id"})
+    jornada!: Jornada
 
     @Column({type: "numeric", nullable: false, default: 0})
     horasExtras!: number
