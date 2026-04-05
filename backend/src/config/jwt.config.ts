@@ -30,6 +30,6 @@ export const jwtConfig = {
     },
     refresh: {
         secret: getEnvOrThrow("JWT_REFRESH_SECRET"),
-        expiresIns: getEnvOrThrow("JWT_REFRESH_EXPIRATION") as SignOptions["expiresIn"]
+        expiresIn: getEnvOrThrow("JWT_REFRESH_EXPIRATION") as SignOptions["expiresIn"]
     }
 }
