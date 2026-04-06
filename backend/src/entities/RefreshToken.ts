@@ -11,7 +11,7 @@ export class RefreshToken {
     @Column({type: "varchar", unique: true})
     jti!: string
 
-    @ManyToOne(() => User, (user) => user.tokens, { onDelete: "CASCADE"})
+    @ManyToOne(() => User, (user) => user.tokens)
     @JoinColumn({name: "token_id"})
     user!: User
 

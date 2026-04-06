@@ -40,7 +40,6 @@ export class User {
     @OneToMany(() => RefreshToken, (token) => token.user)
     tokens!: RefreshToken[]
 
-
     @CreateDateColumn()
     createdAt!: Date
 
