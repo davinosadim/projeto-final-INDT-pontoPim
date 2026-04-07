@@ -8,17 +8,8 @@ export class UserService {
 
     async create(userData: CreateUserSchemaDTO): Promise<User> {
 
-        const { nome, email, senha, role, setor} = userData
-
-        const newUser = this.userRepository.create({
-            nome,
-            role,
-            email,
-            setor
-        })
-
-        await this.userRepository.save(newUser)
-
-        return newUser
+        const newUser = this.userRepository.create(userData)
+        const savedUser = await this.userRepository.save(newUser)
+        return savedUser
     }
 }
