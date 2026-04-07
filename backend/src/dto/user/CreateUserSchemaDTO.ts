@@ -1,5 +1,6 @@
 import { z } from "zod"
 import { UserRole } from "../../types/roles"
+import { Setores } from "../../types/setores"
 
 
 export const createUserSchema = z.object({
@@ -18,7 +19,7 @@ export const createUserSchema = z.object({
         error: "A senha deve conter ao menos 1 numero"
     }),
     role: z.enum(UserRole),
-    setorId: z.uuid()
+    setor: z.enum(Setores)
 
 })
 

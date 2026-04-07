@@ -4,6 +4,7 @@ import { RegistroPonto } from "./RegistroPonto";
 import { AjustePonto } from "./AjustePonto";
 import { Colaborador } from "./Colaborador";
 import { RefreshToken } from "./RefreshToken";
+import { Setores } from "../types/setores";
 
 
 
@@ -28,8 +29,8 @@ export class User {
     @Column({type: "enum", enum: UserRole})
     role!: UserRole
 
-    @Column()
-    setor!: string
+    @Column({type: "enum", enum: Setores})
+    setor!: Setores
 
     @OneToMany(() => RegistroPonto, (registro) => registro.registradoPor)
     registroFeitos!: RegistroPonto[]
