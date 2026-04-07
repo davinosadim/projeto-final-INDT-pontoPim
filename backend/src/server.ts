@@ -2,6 +2,7 @@ import dotenv from "dotenv"
 import express from "express"
 import { appDataSource } from "./database/data-source"
 
+
 dotenv.config()
 
 const app = express()
