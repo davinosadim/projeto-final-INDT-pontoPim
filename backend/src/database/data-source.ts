@@ -9,6 +9,7 @@ import { ResumoDiario } from "../entities/ResumoDiario";
 import { User } from "../entities/User";
 import { Setor } from "../entities/Setor";
 import { Cargo } from "../entities/Cargos";
+import { RefreshToken } from "../entities/RefreshToken";
 
 dotenv.config()
 
@@ -21,7 +22,7 @@ export const appDataSource = new DataSource({
     database: process.env.DB_DATABASE as string,
     synchronize: true,
     logging: false,
-    entities: [Colaborador, Jornada, RegistroPonto, AjustePonto, ResumoDiario, User, Setor, Cargo],
+    entities: [Colaborador, Jornada, RegistroPonto, AjustePonto, ResumoDiario, User, Setor, Cargo, RefreshToken],
     migrations: [],
     subscribers: []
     

@@ -1,6 +1,8 @@
 import dotenv from "dotenv"
 import express from "express"
 import { appDataSource } from "./database/data-source"
+import routes from "./routes"
+
 
 dotenv.config()
 
@@ -9,6 +11,7 @@ const app = express()
 const PORT = process.env.PORT || 6060
 
 app.use(express.json())
+app.use(routes)
 
 
 appDataSource.initialize().then(() => {
