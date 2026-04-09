@@ -4,6 +4,8 @@ import { AppError } from "../errors/AppError";
 
 export const erroHandler: ErrorRequestHandler = (err, _req, res, _next) => {
 
+    console.log(err)
+
     if(err instanceof AppError) {
         return res.status(err.statusCode).json({
             message: err.message,

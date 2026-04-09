@@ -14,9 +14,15 @@ export class AuthService {
 
     async login(email: string, senha: string) {
 
+        console.log(email)
+
         const user = await this.userRepository.findOne({
             where: {email},
+            select: ["id", "email", "senha"]
         })
+
+        console.log(user)
+
         if (!user) {
             throw new AppError("Credenciais invalidas")
         }

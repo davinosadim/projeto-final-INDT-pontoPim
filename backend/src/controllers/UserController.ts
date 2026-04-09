@@ -9,8 +9,8 @@ export class UserController {
         try {
 
             const user = await userService.create(req.body)
-            const { senha, ...userSemSenha} = user
-            return res.status(201).json(userSemSenha)
+            console.log(user)
+            return res.status(201).json(user)
             
         } catch (error) {
             return res.status(500).json({message: "Erro ao criar usuario"})

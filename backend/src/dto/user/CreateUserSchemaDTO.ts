@@ -3,6 +3,7 @@ import { UserRole } from "../../types/roles"
 import { Setores } from "../../types/setores"
 
 
+
 export const createUserSchema = z.object({
     nome: z.string().trim().min(1, "Nome e obrigatorio").max(100, "Nome deve ter no maximo 100 caracteres"),
     email: z.email("E-mail invalido").trim().toLowerCase(),
@@ -20,7 +21,10 @@ export const createUserSchema = z.object({
     }),
     role: z.enum(UserRole),
     setor: z.enum(Setores)
+   
 
 })
 
 export type CreateUserSchemaDTO = z.infer<typeof createUserSchema>
+
+    

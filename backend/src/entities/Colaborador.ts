@@ -19,8 +19,9 @@ export class Colaborador {
     @Column({type: "varchar", nullable: false, unique: true})
     matricula!: string
 
-    @OneToOne(() => User, (user) => user.colaborador)
-    user!: User
+    @OneToOne(() => User, {nullable: true})
+    @JoinColumn({name: "user_id"})
+    user!: User | null
 
     @Column({type: "enum", enum: Cargos, nullable: false})
     cargo!: Cargos

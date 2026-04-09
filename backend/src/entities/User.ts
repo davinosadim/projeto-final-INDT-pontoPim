@@ -13,17 +13,16 @@ export class User {
     @PrimaryGeneratedColumn("uuid")
     id!: string
 
-    @Column()
+    @Column({type: "varchar"})
     nome!: string
 
     @OneToOne(() => Colaborador, (colaborador) => colaborador.user)
-    @JoinColumn({name: "colaborador_id"})
-    colaborador!: Colaborador
+    colaborador!: Colaborador | null
 
     @Column({unique: true, nullable: false})
     email!: string
 
-    @Column()
+    @Column({type: "varchar", select: false})
     senha!: string
 
     @Column({type: "enum", enum: UserRole})

@@ -23,9 +23,11 @@ export class AuthController {
     async login(req: Request, res: Response) {
         const { email, senha } = req.body
 
+        console.log("Ola")
+
         const result = await this.authService.login(email, senha)
 
-        res.status(200).json({status: "sucess", data: result})
+        return res.status(200).json({status: "sucess", data: result})
     }
 
     async refresh(req: Request, res: Response) {

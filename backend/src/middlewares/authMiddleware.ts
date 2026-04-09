@@ -13,6 +13,8 @@ export interface AuthRequest extends Request {
 export function authMiddleware (req: AuthRequest, res: Response, next: NextFunction) {
     const authHeader = req.headers.authorization
 
+
+
     if(!authHeader) {
         throw new AppError("Token nao fornecido")
     }

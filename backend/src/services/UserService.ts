@@ -1,6 +1,7 @@
 import { appDataSource } from "../database/data-source";
 import { User } from "../entities/User";
 import { CreateUserSchemaDTO } from "../dto/user/CreateUserSchemaDTO";
+import bcrypt from "bcrypt"
 
 export class UserService {
 
@@ -8,8 +9,20 @@ export class UserService {
 
     async create(userData: CreateUserSchemaDTO): Promise<User> {
 
-        const newUser = this.userRepository.create(userData)
-        const savedUser = await this.userRepository.save(newUser)
-        return savedUser
+        const { nome, email, senha, role, setor } = userData
+
+        const senhaHash = await bcrypt.hash(senha, 10)
+
+        const user = this.userRepository.create({
+            nome,
+            email,
+            senha: senhaHash,
+            role,
+            setor
+        })
+
+        await this.userRepository.save(user)
+
+        return user
     }
 }
