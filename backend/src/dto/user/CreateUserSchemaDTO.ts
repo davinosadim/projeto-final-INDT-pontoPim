@@ -25,6 +25,11 @@ export const createUserSchema = z.object({
 
 })
 
-export type CreateUserSchemaDTO = z.infer<typeof createUserSchema>
 
+export const updateUserSchema = createUserSchema
+    .omit({ senha: true })
+    .partial()
+
+export type CreateUserSchemaDTO = z.infer<typeof createUserSchema>
+export type UpdateUserSchemaDTO = z.infer<typeof updateUserSchema>
     

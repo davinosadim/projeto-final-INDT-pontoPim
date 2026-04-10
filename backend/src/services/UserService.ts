@@ -1,6 +1,7 @@
 import { appDataSource } from "../database/data-source";
 import { User } from "../entities/User";
-import { CreateUserSchemaDTO } from "../dto/user/CreateUserSchemaDTO";
+import { CreateUserSchemaDTO, UpdateUserSchemaDTO } from "../dto/user/CreateUserSchemaDTO";
+import { AppError } from "../errors/AppError";
 import bcrypt from "bcrypt"
 
 export class UserService {
