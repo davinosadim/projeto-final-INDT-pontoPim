@@ -7,15 +7,19 @@ import { authMiddleware } from "../middlewares/authMiddleware";
 import { createUserSchema } from "../dto/user/CreateUserSchemaDTO";
 import { validate } from "../middlewares/validateBody";
 import { loginSchemaDTO } from "../dto/login/LoginSchemaDTO";
+import { refreshSchema } from "../dto/auth/AuthDTO";
 
-const refreshTokenService: RefreshTokenService = new RefreshTokenService()
-const authService: AuthService = new AuthService()
-const logoutService: LogoutService = new LogoutService()
-const authController: AuthController = new AuthController(authService, refreshTokenService, logoutService)
-const authRouter = Router()
+const refreshTokenService: RefreshTokenService = new RefreshTokenService();
+const authService: AuthService = new AuthService();
+const logoutService: LogoutService = new LogoutService();
+const authController: AuthController = new AuthController(authService, refreshTokenService, logoutService);
+const authRouter = Router();
 
 
-authRouter.post("/", validate(loginSchemaDTO), authController.login.bind(authController))
+authRouter.post("/", validate(loginSchemaDTO), authController.login.bind(authController));
+authRouter.post("/refresh", validate(refreshSchema), authController.refresh.bind(authController));
+authRouter.post("/logout", authMiddleware, authController.logout.bind(authController));
+//authRouter.post("/register", validate(createUserSchema), authController.register.bind(authController));
 
 
 

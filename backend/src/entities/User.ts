@@ -8,7 +8,7 @@ import { Setores } from "../types/setores";
 
 
 
-@Entity("users")
+@Entity("user")
 export class User {
     @PrimaryGeneratedColumn("uuid")
     id!: string
