@@ -10,6 +10,7 @@ import { Cargos } from "../types/cargos";
 
 @Entity("colaboradores")
 export class Colaborador {
+
     @PrimaryGeneratedColumn("uuid")
     id!: string
 
@@ -19,10 +20,6 @@ export class Colaborador {
     @Column({type: "varchar", nullable: false, unique: true})
     matricula!: string
 
-    @OneToOne(() => User, {nullable: true})
-    @JoinColumn({name: "user_id"})
-    user!: User | null
-
     @Column({type: "enum", enum: Cargos, nullable: false})
     cargo!: Cargos
 
@@ -31,6 +28,10 @@ export class Colaborador {
 
     @Column({type: "enum", enum: Turno})
     turno!: Turno
+
+    @OneToOne(() => User, {nullable: true})
+    @JoinColumn({name: "user_id"})
+    user!: User | null
 
     @Column({type: "boolean"})
     ativo!: boolean

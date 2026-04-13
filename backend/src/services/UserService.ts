@@ -6,6 +6,7 @@ import bcrypt from "bcrypt"
 import { Repository } from "typeorm";
 import { Setor } from "../entities/Setor";
 import { DataSource } from "typeorm/browser";
+import { hash } from "bcryptjs";
 
 export class UsuarioService {
     private userRepo: Repository<User>;
@@ -25,7 +26,7 @@ export class UsuarioService {
     }
 
     async findAll() {
-        return await this.userRepo.find({ relations: { setor: true } });
+        return await this.userRepo.find({ relations: { setor: true } as any});
     }
 
     async createUsuario(userData: CreateUserSchemaDTO) {
@@ -34,18 +35,18 @@ export class UsuarioService {
             throw new AppError("Usuario ja cadastrado!", 409);
         }
 
-        const setor = await this.setorRepo.findOne({ where: { id: userData.setor_id } });
+        const setor = await this.setorRepo.findOne({ where: { id: userData.setor } });
         if (!setor) {
             throw new AppError("Setor nao encontrado!", 404);
         }
 
-        const senha_hash = await hash(userData.password, 10);
+        const senha_hash = await hash(userData.senha, 10);
         const novoUsuario = await this.userRepo.save({
             nome: userData.nome,
             email: userData.email,
             senha_hash,
-            perfil: userData.perfil,
-            setor
+            role: userData.role,
+            setor: userData.setor
         });
 
         return novoUsuario;
@@ -67,9 +68,9 @@ export class UsuarioService {
 
         let setor;
 
-        if (userUpdate.setor_id) {
+        if (userUpdate.setor) {
             setor = await this.setorRepo.findOne({
-                where: { id: userUpdate.setor_id },
+                where: { id: userUpdate.setor },
             });
 
             if (!setor) {
