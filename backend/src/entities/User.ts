@@ -5,18 +5,20 @@ import { AjustePonto } from "./AjustePonto";
 import { Colaborador } from "./Colaborador";
 import { RefreshToken } from "./RefreshToken";
 import { Setores } from "../types/setores";
+import { Setor } from "./Setor";
 
 
 
 @Entity("user")
 export class User {
     @PrimaryGeneratedColumn("uuid")
-    id!: string
+    id_user!: string
 
     @Column({type: "varchar"})
     nome!: string
 
     @OneToOne(() => Colaborador, (colaborador) => colaborador.user)
+    @JoinColumn({name: "id_colaborador"})
     colaborador!: Colaborador | null
 
     @Column({unique: true, nullable: false})
@@ -28,19 +30,22 @@ export class User {
     @Column({type: "enum", enum: UserRole})
     role!: UserRole
 
-    @Column({type: "enum", enum: Setores})
-    setor!: Setores
+    @OneToOne(() => Setor, {nullable: true})
+    @JoinColumn({name: "id_setor"})
+    setor!: Setor | null
+    
 
     @OneToMany(() => RegistroPonto, (registro) => registro.registradoPor)
     registroFeitos!: RegistroPonto[]
 
     @OneToMany(() => AjustePonto, (ajuste) => ajuste.aprovadoPor)
-    ajustesAprovador!: AjustePonto[]
+    ajustesAprovado!: AjustePonto[]
 
     @OneToMany(() => RefreshToken, (token) => token.user)
-    tokens!: RefreshToken[]
+    @JoinColumn({name: "id_refresh"})
+    token!: RefreshToken[]
 
-    @CreateDateColumn()
+    @CreateDateColumn({type: "timestamptz"})
     createdAt!: Date
 
 

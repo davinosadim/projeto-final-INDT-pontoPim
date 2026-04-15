@@ -19,7 +19,7 @@ export class AjustePonto {
     @Column({type: "varchar"})
     motivo!: string
 
-    @ManyToOne(() => User, (user) => user.ajustesAprovador, { nullable: true})
+    @ManyToOne(() => User, (user) => user.ajustesAprovado, { nullable: true})
     @JoinColumn({name: "aprovado_por"})
     aprovadoPor!: User
 

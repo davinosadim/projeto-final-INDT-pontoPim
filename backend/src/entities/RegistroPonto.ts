@@ -12,7 +12,7 @@ export class RegistroPonto {
 
     @ManyToOne(() => Colaborador, (colaborador) => colaborador.registros)
     @JoinColumn({name: "colaborador_id"})
-    colaborador!: Colaborador
+    colaborador_id!: Colaborador
 
     @Column({type: "enum", enum: TiposRegistros})
     tipo!: TiposRegistros

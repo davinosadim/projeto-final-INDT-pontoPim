@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Cargos } from "../types/cargos";
+import { Colaborador } from "./Colaborador";
 
 
 
@@ -10,4 +11,8 @@ export class Cargo {
 
     @Column({type: "enum", enum: Cargos})
     cargo!: Cargos
+
+    @OneToOne(() => Colaborador, colaborador => colaborador.cargo)
+    @JoinColumn({name: "id_colaborador"})
+    colaborador!: Colaborador
 }

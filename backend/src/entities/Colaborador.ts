@@ -7,12 +7,15 @@ import { User } from "./User";
 import { Setores } from "../types/setores";
 import { Turno } from "../types/turno";
 import { Cargos } from "../types/cargos";
+import { HoraExtra } from "./hora_extra";
+import { Cargo } from "./Cargos";
+import { Setor } from "./Setor";
 
 @Entity("colaboradores")
 export class Colaborador {
 
     @PrimaryGeneratedColumn("uuid")
-    id!: string
+    id_colaborador!: string
 
     @Column({type: "varchar", nullable: false})
     nome!: string
@@ -20,27 +23,26 @@ export class Colaborador {
     @Column({type: "varchar", nullable: false, unique: true})
     matricula!: string
 
-    @Column({type: "enum", enum: Cargos, nullable: false})
-    cargo!: Cargos
+    @OneToOne(() => Cargo, {nullable: false})
+    @JoinColumn({name: "cargo_id"})
+    cargo!: Cargo
 
-    @Column({type: "enum", enum: Setores, nullable: false})
-    setor!: Setores
+    @ManyToOne(() => Setor , (setor) => setor.colaboradores)
+    @JoinColumn({name: "id_setor"})
+    setor!: Setor
 
-    @Column({type: "enum", enum: Turno})
-    turno!: Turno
+    @Column({type: "boolean", default: true})
+    ativo!: boolean
 
     @OneToOne(() => User, {nullable: true})
     @JoinColumn({name: "user_id"})
     user!: User | null
 
-    @Column({type: "boolean"})
-    ativo!: boolean
-
     @ManyToOne(() => Jornada, (jornada) => jornada.colaboradores)
     @JoinColumn({name: "jornada_id"})
     jornada!: Jornada
 
-    @OneToMany(() => RegistroPonto, (registros) => registros.colaborador)
+    @OneToMany(() => RegistroPonto, (registros) => registros.colaborador_id)
     registros!: RegistroPonto[]
 
     @OneToMany(() => ResumoDiario, (resumo) => resumo.colaborador)
@@ -48,6 +50,9 @@ export class Colaborador {
 
     @OneToMany(() => AjustePonto, (ajuste) => ajuste.colaborador)
     ajustes!: AjustePonto[]
+
+    @OneToMany(() => HoraExtra, (horaExtra) => horaExtra.colaboradorId)
+    horasExtras!: HoraExtra[]
 
 
 

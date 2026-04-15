@@ -13,7 +13,7 @@ export class Jornada {
     @Column({type: "enum", enum: Turno})
     turno!: Turno
 
-    @Column({type: "numeric", nullable: false, name:"carga_horaria_dia"})
+    @Column({type: "numeric", precision: 10, scale: 2, nullable: false, name:"carga_horaria_dia"})
     cargaHorariaDia!: number
 
     @Column({type: "time", nullable: false, name: "horario_entrada"})
@@ -25,7 +25,7 @@ export class Jornada {
     @OneToMany(() => Colaborador, (colaborador) => colaborador.jornada)
     colaboradores!: Colaborador[]
 
-    @OneToMany(() => ResumoDiario, (resumo) => resumo.jornada)
+    @OneToMany(() => ResumoDiario, (resumo) => resumo.horas_esperadas)
     resumos!: ResumoDiario[]
 
 
