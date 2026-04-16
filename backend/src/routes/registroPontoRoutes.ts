@@ -6,6 +6,6 @@ import { createRegistroPontoSchemaDTO } from "../dto/registro-ponto.ts/CreateReg
 const registroPontoRoutes = Router()
 const controller = new RegistroPontoController()
 
-registroPontoRoutes.post("/ponto", validate(createRegistroPontoSchemaDTO), controller.create.bind(controller))
+registroPontoRoutes.post("/", validate(createRegistroPontoSchemaDTO), controller.create.bind(controller))
 
 export default registroPontoRoutes
