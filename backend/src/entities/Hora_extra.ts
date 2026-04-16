@@ -19,7 +19,7 @@ export class HoraExtra {
     @Column({type: "varchar", nullable: false})
     motivo!: string
 
-    @OneToOne(() => ResumoDiario, (resumo) => resumo.horasExtras)
+    @OneToOne(() => ResumoDiario, (resumo) => resumo.horaExtra)
     @JoinColumn({name: "resumo_id"})
-    resumoDiario!: ResumoDiario
+    resumo!: ResumoDiario
 }

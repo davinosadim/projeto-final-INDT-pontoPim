@@ -15,19 +15,20 @@ export class ResumoDiario {
     @JoinColumn({name: "colaborador_id"})
     colaborador!: Colaborador
 
-    @CreateDateColumn({type: "date"})
+    @Column({type: "date"}) // Use @Column, pois @CreateDateColumn gera o timestamp de criação automática do registro
     data!: Date
 
     @Column({type: "numeric", nullable: false, default: 0})
     horas_trabalhadas!: number
 
+    // Nome alterado para refletir que é a relação com a Jornada
     @ManyToOne(() => Jornada, (jornada) => jornada.resumos)
     @JoinColumn({name: "jornada_id"})
-    horas_esperadas!: Jornada
+    jornada!: Jornada
 
-    @OneToOne(() => HoraExtra, (horaExtra) => horaExtra.colaboradorId)
+    @OneToOne(() => HoraExtra, (horaExtra) => horaExtra.resumo) // Ajuste o inverso na entidade HoraExtra
     @JoinColumn({name: "hora_extra_id"})
-    horasExtras!: HoraExtra
+    horaExtra!: HoraExtra
 
     @Column({type: "int", nullable: false, default: 0})
     atrasoMinutos!: number

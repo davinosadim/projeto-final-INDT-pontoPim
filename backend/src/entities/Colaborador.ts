@@ -38,11 +38,11 @@ export class Colaborador {
     @JoinColumn({name: "user_id"})
     user!: User | null
 
-    @ManyToOne(() => Jornada, (jornada) => jornada.colaboradores)
+    @ManyToOne(() => Jornada, (jornada) => jornada.colaboradores, { cascade: true })
     @JoinColumn({name: "jornada_id"})
     jornada!: Jornada
 
-    @OneToMany(() => RegistroPonto, (registros) => registros.colaborador_id)
+    @OneToMany(() => RegistroPonto, (registros) => registros.colaborador)
     registros!: RegistroPonto[]
 
     @OneToMany(() => ResumoDiario, (resumo) => resumo.colaborador)
