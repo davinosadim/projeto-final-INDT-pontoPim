@@ -2,7 +2,6 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "t
 import { Colaborador } from "./Colaborador";
 import { TiposRegistros } from "../types/registros";
 import { Origem } from "../types/origem";
-import { User } from "./User";
 
 
 @Entity("registros_pontos")
@@ -27,7 +26,7 @@ export class RegistroPonto {
     @Column({type: "text", nullable: true})
     justificativa!: string | null
 
-    @ManyToOne(() => User, (user) => user.registroFeitos, { nullable: true})
+    @ManyToOne(() => Colaborador, (colaborador) => colaborador.registroFeitos, { nullable: true})
     @JoinColumn({name: "registrado_por"})
-    registradoPor!: User | null
+    registradoPor!: Colaborador | null
 }

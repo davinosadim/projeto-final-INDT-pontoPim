@@ -2,7 +2,7 @@ import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, Prim
 import { Colaborador } from "./Colaborador";
 import { StatusResumo } from "../types/statusResumo";
 import { Jornada } from "./Jornada";
-import { HoraExtra } from "./hora_extra";
+import { HoraExtra } from "./Hora_extra";
 
 
 @Entity("resumos_diarios")
@@ -26,7 +26,7 @@ export class ResumoDiario {
     @JoinColumn({name: "jornada_id"})
     jornada!: Jornada
 
-    @OneToOne(() => HoraExtra, (horaExtra) => horaExtra.resumo) // Ajuste o inverso na entidade HoraExtra
+    @OneToOne(() => HoraExtra, (hora_extra) => hora_extra.resumo) // Ajuste o inverso na entidade HoraExtra
     @JoinColumn({name: "hora_extra_id"})
     horaExtra!: HoraExtra
 

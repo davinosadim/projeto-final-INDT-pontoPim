@@ -3,11 +3,7 @@ import { Jornada } from "./Jornada";
 import { RegistroPonto } from "./RegistroPonto";
 import { ResumoDiario } from "./ResumoDiario";
 import { AjustePonto } from "./AjustePonto";
-import { User } from "./User";
-import { Setores } from "../types/setores";
-import { Turno } from "../types/turno";
-import { Cargos } from "../types/cargos";
-import { HoraExtra } from "./hora_extra";
+import { HoraExtra } from "./Hora_extra";
 import { Cargo } from "./Cargos";
 import { Setor } from "./Setor";
 
@@ -19,6 +15,12 @@ export class Colaborador {
 
     @Column({type: "varchar", nullable: false})
     nome!: string
+
+    @Column({unique: true, nullable: false})
+    email!: string
+
+    @Column({type: "varchar", select: false})
+    senha!: string
     
     @Column({type: "varchar", nullable: false, unique: true})
     matricula!: string
@@ -33,10 +35,6 @@ export class Colaborador {
 
     @Column({type: "boolean", default: true})
     ativo!: boolean
-
-    @OneToOne(() => User, {nullable: true})
-    @JoinColumn({name: "user_id"})
-    user!: User | null
 
     @ManyToOne(() => Jornada, (jornada) => jornada.colaboradores, { cascade: true })
     @JoinColumn({name: "jornada_id"})
@@ -53,6 +51,9 @@ export class Colaborador {
 
     @OneToMany(() => HoraExtra, (horaExtra) => horaExtra.colaboradorId)
     horasExtras!: HoraExtra[]
+
+    @OneToMany(() => RegistroPonto, (registro) => registro.registradoPor)
+    registroFeitos!: RegistroPonto[]
 
 
 
