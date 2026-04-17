@@ -6,12 +6,12 @@ import { User } from "./User";
 export class RefreshToken {
 
     @PrimaryGeneratedColumn("uuid")
-    id!: string
+    id_refresh!: string
 
     @Column({type: "varchar", unique: true})
     jti!: string
 
-    @ManyToOne(() => User, (user) => user.tokens)
+    @ManyToOne(() => User, (user) => user.token)
     @JoinColumn({name: "token_id"})
     user!: User
 

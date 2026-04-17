@@ -1,14 +1,9 @@
 import { minLength, z } from "zod"
 
 export const espelhoMensalParamSchemaDTO = z.object({
-    id: z.coerce.number()
-    .int("id deve ser inteiro")
-    .positive("id invalido"),
-
-    mes: z.coerce.number()
-    .int("mes deve ser inteiro")
-    .min(1, "Mes deve ser entre 1 e 12")
-    .max(12, "Mes deve ser entre 1 e 12")
-})
+    id: z.string().uuid("ID do colaborador inválido"),
+    mes: z.coerce.number().int().min(1).max(12),
+    ano: z.coerce.number().int().min(2020) 
+});
 
 export type EspelhoMensalParamSchemaDTO = z.infer<typeof espelhoMensalParamSchemaDTO>

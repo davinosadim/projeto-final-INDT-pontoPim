@@ -3,39 +3,40 @@ import { Jornada } from "./Jornada";
 import { RegistroPonto } from "./RegistroPonto";
 import { ResumoDiario } from "./ResumoDiario";
 import { AjustePonto } from "./AjustePonto";
-import { User } from "./User";
-import { Setores } from "../types/setores";
-import { Turno } from "../types/turno";
-import { Cargos } from "../types/cargos";
+import { HoraExtra } from "./Hora_extra";
+import { Cargo } from "./Cargos";
+import { Setor } from "./Setor";
 
 @Entity("colaboradores")
 export class Colaborador {
+
     @PrimaryGeneratedColumn("uuid")
-    id!: string
+    id_colaborador!: string
 
     @Column({type: "varchar", nullable: false})
     nome!: string
+
+    @Column({unique: true, nullable: false})
+    email!: string
+
+    @Column({type: "varchar", select: false})
+    senha!: string
     
     @Column({type: "varchar", nullable: false, unique: true})
     matricula!: string
 
-    @OneToOne(() => User, {nullable: true})
-    @JoinColumn({name: "user_id"})
-    user!: User | null
+    @OneToOne(() => Cargo, {nullable: false})
+    @JoinColumn({name: "cargo_id"})
+    cargo!: Cargo
 
-    @Column({type: "enum", enum: Cargos, nullable: false})
-    cargo!: Cargos
+    @ManyToOne(() => Setor , (setor) => setor.colaboradores)
+    @JoinColumn({name: "id_setor"})
+    setor!: Setor
 
-    @Column({type: "enum", enum: Setores, nullable: false})
-    setor!: Setores
-
-    @Column({type: "enum", enum: Turno})
-    turno!: Turno
-
-    @Column({type: "boolean"})
+    @Column({type: "boolean", default: true})
     ativo!: boolean
 
-    @ManyToOne(() => Jornada, (jornada) => jornada.colaboradores)
+    @ManyToOne(() => Jornada, (jornada) => jornada.colaboradores, { cascade: true })
     @JoinColumn({name: "jornada_id"})
     jornada!: Jornada
 
@@ -47,6 +48,12 @@ export class Colaborador {
 
     @OneToMany(() => AjustePonto, (ajuste) => ajuste.colaborador)
     ajustes!: AjustePonto[]
+
+    @OneToMany(() => HoraExtra, (horaExtra) => horaExtra.colaboradorId)
+    horasExtras!: HoraExtra[]
+
+    @OneToMany(() => RegistroPonto, (registro) => registro.registradoPor)
+    registroFeitos!: RegistroPonto[]
 
 
 

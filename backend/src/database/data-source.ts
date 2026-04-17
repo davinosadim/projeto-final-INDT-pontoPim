@@ -22,7 +22,7 @@ export const appDataSource = new DataSource({
     database: process.env.DB_DATABASE as string,
     synchronize: true,
     logging: false,
-    entities: [Colaborador, Jornada, RegistroPonto, AjustePonto, ResumoDiario, User, Setor, Cargo, RefreshToken],
+    entities: ['src/entities/**/*.ts'],
     migrations: [],
     subscribers: []
     

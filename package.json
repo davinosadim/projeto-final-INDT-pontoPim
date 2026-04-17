@@ -1,0 +1,36 @@
+{
+  "name": "projeto-final-indt-pontopim",
+  "version": "1.0.0",
+  "description": "📌 PontoPIM - Sistema de Controle de Ponto e Jornada",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davinosadim/projeto-final-INDT-pontoPim.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/davinosadim/projeto-final-INDT-pontoPim/issues"
+  },
+  "homepage": "https://github.com/davinosadim/projeto-final-INDT-pontoPim#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.20.0",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^0.3.28",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10"
+  }
+}

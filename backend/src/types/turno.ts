@@ -3,5 +3,4 @@ export enum Turno {
     TARDE = "tarde",
     NOITE = "noite",
     ADMINISTRATIVO = "administrativo"
-
 }

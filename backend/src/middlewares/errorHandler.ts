@@ -4,20 +4,18 @@ import { AppError } from "../errors/AppError";
 
 export const erroHandler: ErrorRequestHandler = (err, _req, res, _next) => {
 
-    console.log(err)
-
     if(err instanceof AppError) {
         return res.status(err.statusCode).json({
             message: err.message,
             details: err.details
-        })
+        });
     }
 
     if (err instanceof ZodError) {
         return res.status(400).json({
             message: "Dados invalidos",
             details: err.flatten()
-        })
+        });
     }
 
     console.log(err)

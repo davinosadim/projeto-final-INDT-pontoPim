@@ -1,8 +1,8 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Colaborador } from "./Colaborador";
 import { StatusResumo } from "../types/statusResumo";
 import { Jornada } from "./Jornada";
-import { join } from "node:path";
+import { HoraExtra } from "./Hora_extra";
 
 
 @Entity("resumos_diarios")
@@ -15,18 +15,20 @@ export class ResumoDiario {
     @JoinColumn({name: "colaborador_id"})
     colaborador!: Colaborador
 
-    @Column({type: "date", nullable: false})
+    @Column({type: "date"}) // Use @Column, pois @CreateDateColumn gera o timestamp de criação automática do registro
     data!: Date
 
     @Column({type: "numeric", nullable: false, default: 0})
-    horasTrabalhadas!: number
+    horas_trabalhadas!: number
 
+    // Nome alterado para refletir que é a relação com a Jornada
     @ManyToOne(() => Jornada, (jornada) => jornada.resumos)
     @JoinColumn({name: "jornada_id"})
     jornada!: Jornada
 
-    @Column({type: "numeric", nullable: false, default: 0})
-    horasExtras!: number
+    @OneToOne(() => HoraExtra, (hora_extra) => hora_extra.resumo) // Ajuste o inverso na entidade HoraExtra
+    @JoinColumn({name: "hora_extra_id"})
+    horaExtra!: HoraExtra
 
     @Column({type: "int", nullable: false, default: 0})
     atrasoMinutos!: number
