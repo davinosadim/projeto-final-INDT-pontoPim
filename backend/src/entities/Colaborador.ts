@@ -6,6 +6,7 @@ import { AjustePonto } from "./AjustePonto";
 import { HoraExtra } from "./Hora_extra";
 import { Cargo } from "./Cargos";
 import { Setor } from "./Setor";
+import { RefreshToken } from "./RefreshToken";
 
 @Entity("colaboradores")
 export class Colaborador {
@@ -54,6 +55,9 @@ export class Colaborador {
 
     @OneToMany(() => RegistroPonto, (registro) => registro.registradoPor)
     registroFeitos!: RegistroPonto[]
+
+    @OneToMany(() => RefreshToken, (token) => token.colaborador)
+    token!: RefreshToken
 
 
 

@@ -22,7 +22,7 @@ export class ResumoDiario {
     horas_trabalhadas!: number
 
     // Nome alterado para refletir que é a relação com a Jornada
-    @ManyToOne(() => Jornada, (jornada) => jornada.resumos)
+    @ManyToOne(() => Jornada, (jornada) => jornada.colaboradores)
     @JoinColumn({name: "jornada_id"})
     jornada!: Jornada
 
