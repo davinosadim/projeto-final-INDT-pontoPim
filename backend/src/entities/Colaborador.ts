@@ -4,9 +4,10 @@ import { RegistroPonto } from "./RegistroPonto";
 import { ResumoDiario } from "./ResumoDiario";
 import { AjustePonto } from "./AjustePonto";
 import { HoraExtra } from "./Hora_extra";
-import { Cargo } from "./Cargos";
 import { Setor } from "./Setor";
 import { RefreshToken } from "./RefreshToken";
+import { Cargos } from "../types/cargos";
+import { Setores } from "../types/setores";
 
 @Entity("colaboradores")
 export class Colaborador {
@@ -26,13 +27,11 @@ export class Colaborador {
     @Column({type: "varchar", nullable: false, unique: true})
     matricula!: string
 
-    @OneToOne(() => Cargo, {nullable: false})
-    @JoinColumn({name: "cargo_id"})
-    cargo!: Cargo
+    @Column({type: "enum", enum: Cargos})
+    cargo!: Cargos
 
-    @ManyToOne(() => Setor , (setor) => setor.colaboradores)
-    @JoinColumn({name: "id_setor"})
-    setor!: Setor
+    @Column({type: "enum", enum: Setores})
+    setor!: Setores
 
     @Column({type: "boolean", default: true})
     ativo!: boolean
@@ -50,8 +49,8 @@ export class Colaborador {
     @OneToMany(() => AjustePonto, (ajuste) => ajuste.colaborador)
     ajustes!: AjustePonto[]
 
-    @OneToMany(() => HoraExtra, (horaExtra) => horaExtra.colaboradorId)
-    horasExtras!: HoraExtra[]
+    // @OneToMany(() => HoraExtra, (horaExtra) => horaExtra.colaboradorId)
+    // horasExtras!: HoraExtra[]
 
     @OneToMany(() => RegistroPonto, (registro) => registro.registradoPor)
     registroFeitos!: RegistroPonto[]

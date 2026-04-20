@@ -1,6 +1,6 @@
 import type { JwtPayload } from "jsonwebtoken";
 import { appDataSource } from "../database/data-source";
-import { User } from "../entities/User";
+import { Colaborador } from "../entities/Colaborador";
 import { RefreshToken } from "../entities/RefreshToken";
 import { jwtConfig } from "../config/jwt.config";
 import jwt from "jsonwebtoken";
@@ -10,7 +10,7 @@ import { email } from "zod";
 export class RefreshTokenService {
 
     private refreshRepository = appDataSource.getRepository(RefreshToken)
-    private userRepository = appDataSource.getRepository(User)
+    private userRepository = appDataSource.getRepository(Colaborador)
 
     async execute(refreshTokenJWT: string) {
         let payload: JwtPayload
@@ -40,8 +40,8 @@ export class RefreshTokenService {
         }
 
         const acessToken = jwt.sign({
-            sub: session.user.id,
-            email: session.user.email,
+            sub: session.colaborador.id_colaborador,
+            email: session.colaborador.email,
             type: "acess"
         }, 
         jwtConfig.access.secret,
