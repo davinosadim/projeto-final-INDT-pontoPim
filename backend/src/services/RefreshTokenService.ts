@@ -5,12 +5,12 @@ import { RefreshToken } from "../entities/RefreshToken";
 import { jwtConfig } from "../config/jwt.config";
 import jwt from "jsonwebtoken";
 import { AppError } from "../errors/AppError";
-import { email } from "zod";
+
 
 export class RefreshTokenService {
 
     private refreshRepository = appDataSource.getRepository(RefreshToken)
-    private userRepository = appDataSource.getRepository(Colaborador)
+    private colaboradorRepository = appDataSource.getRepository(Colaborador)
 
     async execute(refreshTokenJWT: string) {
         let payload: JwtPayload

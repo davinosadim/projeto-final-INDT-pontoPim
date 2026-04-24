@@ -9,14 +9,14 @@ import { randomUUID } from "crypto"
 
 export class AuthService {
 
-    private userRepository = appDataSource.getRepository(Colaborador)
+    private colaboradorRepository = appDataSource.getRepository(Colaborador)
     private refresRepository = appDataSource.getRepository(RefreshToken)
 
     async login(email: string, senha: string) {
 
         console.log(email)
 
-        const user = await this.userRepository.findOne({
+        const user = await this.colaboradorRepository.findOne({
             where: {email},
             select: ["id_colaborador", "email", "senha"]
         })
@@ -46,6 +46,9 @@ export class AuthService {
 
     // metodos para gerar tokens
    private generateAcessToken(colaborador: Colaborador) {
+
+    console.log("ID indo para o access token:", colaborador.id_colaborador);
+    console.log("Email indo para o access token:", colaborador.email);
     return jwt.sign({
         sub: colaborador.id_colaborador,
         email: colaborador.email,

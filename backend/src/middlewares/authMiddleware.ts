@@ -19,7 +19,7 @@ export function authMiddleware (req: AuthRequest, res: Response, next: NextFunct
         throw new AppError("Token nao fornecido")
     }
 
-    const [, token] = authHeader.split("")
+    const [, token] = authHeader.split(" ")
 
     if(!token) {
         throw new AppError("Token malformado")
