@@ -1,7 +1,7 @@
 import type { RequestHandler } from "express";
 import jwt, { type JwtPayload } from "jsonwebtoken";
-import { AppError } from "../errors/AppError.js";
-import type { UserRole } from "../types/roles.js";
+import { AppError } from "../errors/AppError";
+import type { UserRole } from "../types/roles";
 
 declare global {
     namespace Express {

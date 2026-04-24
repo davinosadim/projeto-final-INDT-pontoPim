@@ -1,7 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Turno } from "../types/turno";
 import { Colaborador } from "./Colaborador";
-import { ResumoDiario } from "./ResumoDiario";
 
 
 
@@ -24,9 +23,6 @@ export class Jornada {
 
     @OneToMany(() => Colaborador, (colaborador) => colaborador.jornada)
     colaboradores!: Colaborador[]
-
-    @OneToMany(() => ResumoDiario, (resumo) => resumo.horas_esperadas)
-    resumos!: ResumoDiario[]
 
 
 }

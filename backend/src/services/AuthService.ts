@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt"
 import { appDataSource } from "../database/data-source"
-import { User } from "../entities/User"
+import { Colaborador } from "../entities/Colaborador"
 import { AppError } from "../errors/AppError"
 import jwt from "jsonwebtoken"
 import { jwtConfig } from "../config/jwt.config"
@@ -9,16 +9,16 @@ import { randomUUID } from "crypto"
 
 export class AuthService {
 
-    private userRepository = appDataSource.getRepository(User)
+    private colaboradorRepository = appDataSource.getRepository(Colaborador)
     private refresRepository = appDataSource.getRepository(RefreshToken)
 
     async login(email: string, senha: string) {
 
         console.log(email)
 
-        const user = await this.userRepository.findOne({
+        const user = await this.colaboradorRepository.findOne({
             where: {email},
-            select: ["id", "email", "senha"]
+            select: ["id_colaborador", "email", "senha"]
         })
 
         console.log(user)
@@ -45,10 +45,13 @@ export class AuthService {
     }
 
     // metodos para gerar tokens
-   private generateAcessToken(user: User) {
+   private generateAcessToken(colaborador: Colaborador) {
+
+    console.log("ID indo para o access token:", colaborador.id_colaborador);
+    console.log("Email indo para o access token:", colaborador.email);
     return jwt.sign({
-        sub: user.id,
-        email: user.email,
+        sub: colaborador.id_colaborador,
+        email: colaborador.email,
         type: "acess",
     }, 
     jwtConfig.access.secret, 
@@ -59,9 +62,9 @@ export class AuthService {
    }
 
 
-   private generateRefreshToken(user: User, jti: string) { 
+   private generateRefreshToken(colaborador: Colaborador, jti: string) { 
     return jwt.sign( { 
-        sub: user.id, 
+        sub: colaborador.id_colaborador, 
         jti: jti, 
         type: "refresh", 
     }, 
@@ -72,10 +75,10 @@ export class AuthService {
 ); 
     } 
 
-    private async createRefreshToken(user: User) {
+    private async createRefreshToken(colaborador: Colaborador) {
         const token = this.refresRepository.create({
             jti: randomUUID(),
-            user,
+            colaborador,
         })
 
         return this.refresRepository.save(token)

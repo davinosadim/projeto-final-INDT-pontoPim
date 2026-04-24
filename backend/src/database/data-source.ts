@@ -1,15 +1,7 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm";
 import * as dotenv from "dotenv"
-import { Colaborador } from "../entities/Colaborador";
-import { Jornada } from "../entities/Jornada";
-import { RegistroPonto } from "../entities/RegistroPonto";
-import { AjustePonto } from "../entities/AjustePonto";
-import { ResumoDiario } from "../entities/ResumoDiario";
-import { User } from "../entities/User";
-import { Setor } from "../entities/Setor";
-import { Cargo } from "../entities/Cargos";
-import { RefreshToken } from "../entities/RefreshToken";
+
 
 dotenv.config()
 

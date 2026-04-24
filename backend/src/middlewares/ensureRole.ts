@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
-import type { UserRole } from "../types/roles.js";
-import { AppError } from "../errors/AppError.js";
+import type { UserRole } from "../types/roles";
+import { AppError } from "../errors/AppError";
 
 export const ensureRole = (...perfisPermitido: UserRole[]): RequestHandler => {
     return (req, res, next) => {

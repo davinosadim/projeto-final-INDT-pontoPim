@@ -5,12 +5,17 @@ import type { RequestHandler } from "express";
 export const validate = (schema: ZodSchema) : RequestHandler => {
     return (req, _res, next) => {
         const result = schema.safeParse(req.body);
+        console.log(req.params)
+
+
 
         if (!result.success) {
-            return next(new AppError("Dados invalidos", 400, result.error.flatten()));
+            throw new AppError("Dados invalidos", 400, result.error);
         }
 
         req.body = result.data;
+
+    
         return next();
     }
 };

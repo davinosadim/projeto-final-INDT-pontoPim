@@ -5,7 +5,7 @@ import { converterHorarioParaMinutos } from "../../utils/time"
 const horarioRegex = /^([01]\d|2[0-3]):[0-5]\d$/
 
 export const createJornadaSchemaDTO = z.object({
-    turno: z.nativeEnum(Turno, {
+    turno: z.enum(Turno, {
         error: "Turno inválido"
     }),
 

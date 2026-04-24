@@ -6,9 +6,9 @@ export class HoraExtra {
     @PrimaryGeneratedColumn("uuid")
     id!: string
 
-    @ManyToOne(() => Colaborador, (colaborador) => colaborador.horasExtras)
-    @JoinColumn({name: "colaborador_id"})
-    colaboradorId!: string
+    // @ManyToOne(() => Colaborador, (colaborador) => colaborador.horasExtras)
+    // @JoinColumn({name: "colaborador_id"})
+    // colaboradorId!: string
 
     @CreateDateColumn({type: "date"})
     data!: Date
@@ -19,7 +19,4 @@ export class HoraExtra {
     @Column({type: "varchar", nullable: false})
     motivo!: string
 
-    @OneToOne(() => ResumoDiario, (resumo) => resumo.horaExtra)
-    @JoinColumn({name: "resumo_id"})
-    resumo!: ResumoDiario
 }
