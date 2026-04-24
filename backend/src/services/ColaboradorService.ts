@@ -1,7 +1,6 @@
 import { appDataSource } from "../database/data-source";
 import { CreateUserSchemaDTO, UpdateUserSchemaDTO } from "../dto/user/CreateUserSchemaDTO";
 import { AppError } from "../errors/AppError";
-import bcrypt from "bcrypt"
 import { Repository } from "typeorm";
 import { Setor } from "../entities/Setor";
 import { DataSource } from "typeorm/browser";
