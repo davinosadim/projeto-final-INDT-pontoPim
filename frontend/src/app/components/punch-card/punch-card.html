@@ -1,0 +1,57 @@
+<div
+  class="rounded-xl p-5 flex flex-col justify-between min-h-[140px] transition-colors"
+  [ngClass]="{
+    'bg-white border border-slate-200 hover:border-blue-200': batida.status === 'registrado',
+    'bg-white border-2 border-dashed border-slate-200': batida.status === 'pendente',
+    'bg-slate-50 border border-slate-200 opacity-60': batida.status === 'bloqueado'
+  }"
+>
+  <div class="flex justify-between items-start">
+    <span
+      class="font-semibold uppercase text-[11px] tracking-widest"
+      [ngClass]="{
+        'text-slate-600': batida.status === 'registrado',
+        'text-blue-900': batida.status === 'pendente',
+        'text-slate-400': batida.status === 'bloqueado'
+      }"
+    >
+      {{ batida.titulo }}
+    </span>
+
+    <div
+      class="w-8 h-8 rounded-full flex items-center justify-center"
+      [ngClass]="{
+        'bg-emerald-50 text-emerald-600': batida.status === 'registrado',
+        'text-slate-400': batida.status === 'pendente',
+        'text-slate-300': batida.status === 'bloqueado'
+      }"
+    >
+      <span class="material-symbols-outlined">
+        {{ batida.icone }}
+      </span>
+    </div>
+  </div>
+
+  <div class="space-y-1">
+    <span
+      class="text-3xl font-bold"
+      [ngClass]="{
+        'text-blue-900': batida.status === 'registrado',
+        'text-slate-300': batida.status !== 'registrado'
+      }"
+    >
+      {{ batida.horario }}
+    </span>
+
+    <p
+      class="text-sm"
+      [ngClass]="{
+        'text-slate-500': batida.status === 'registrado',
+        'text-blue-900 font-semibold': batida.status === 'pendente',
+        'text-slate-400': batida.status === 'bloqueado'
+      }"
+    >
+      {{ batida.detalhe }}
+    </p>
+  </div>
+</div>
