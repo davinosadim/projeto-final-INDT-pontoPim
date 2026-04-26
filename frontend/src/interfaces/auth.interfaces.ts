@@ -12,7 +12,9 @@ export interface LoginUser {
 }
 
 export interface LoginResponse {
-  accessToken: string;
-  refreshToken?: string;
-  user?: LoginUser;
+  status: string
+  data: {
+    acessToken: string;
+    refreshToken: string;
+  }
 }
