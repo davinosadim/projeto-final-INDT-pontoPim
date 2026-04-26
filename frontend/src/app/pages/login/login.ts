@@ -1,0 +1,19 @@
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-login',
+  imports: [],
+  templateUrl: './login.html',
+  styleUrl: './login.css',
+})
+export class Login {
+   showPassword = false;
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
+  }
+
+  login() {
+    console.log('Login enviado');
+  }
+}
