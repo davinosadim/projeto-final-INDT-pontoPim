@@ -1,11 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { Input } from '@angular/core';
+import { TipoBatida } from '../../pages/meu-ponto/meu-ponto';
 
 
 export type PunchStatus = 'registrado' | 'pendente' | 'bloqueado';
 
 export interface PunchCardData {
+  tipo: TipoBatida
   titulo: string;
   horario: string;
   detalhe: string;
@@ -21,5 +23,5 @@ export interface PunchCardData {
 })
 export class PunchCard {
 
-  @Input({ required: true }) batida!: PunchCardData;
+  @Input() batida!: PunchCardData;
 }
