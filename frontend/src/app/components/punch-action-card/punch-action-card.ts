@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
+
 @Component({
   selector: 'app-punch-action-card',
   imports: [],
@@ -7,11 +8,14 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrl: './punch-action-card.css',
 })
 export class PunchActionCard {
-   @Input() proximaBatida = 'Saída para Almoço';
+  
+  @Input() proximaBatida = 'Saída para Almoço';
 
   @Output() registrar = new EventEmitter<void>();
 
   onRegistrar() {
     this.registrar.emit();
-  }
+
+}
+
 }

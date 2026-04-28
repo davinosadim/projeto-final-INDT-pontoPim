@@ -3,6 +3,7 @@ import { AuthService } from '../../auth/auth.service';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
+
 @Component({
   selector: 'app-login',
   imports: [FormsModule],
@@ -11,11 +12,11 @@ import { Router } from '@angular/router';
 })
 export class Login {
 
-  private loginService = inject(AuthService)
+  private authService = inject(AuthService)
   private router = inject(Router)
 
-  email = " "
-  senha = " "
+  email = '';
+  senha = '';
   showPassword = false;
 
   togglePassword() {
@@ -24,16 +25,15 @@ export class Login {
 
   login() {
 
-    console.log("clicou")
     const dadosLogin = {
       email: this.email,
       senha: this.senha
     }
 
-    this.loginService.login(dadosLogin).subscribe({
+    this.authService.login(dadosLogin).subscribe({
       next: (response) => {
-        console.log("Login realizado:", response)
-        localStorage.setItem("acessToken", response.accessToken)
+        console.log("Resposta login:", response)
+        this.authService.salvarTokens(response)
 
         this.router.navigate(["meuPonto"])
       },
