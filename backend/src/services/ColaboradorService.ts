@@ -1,106 +1,75 @@
 import { appDataSource } from "../database/data-source";
-import { CreateUserSchemaDTO, UpdateUserSchemaDTO } from "../dto/user/CreateUserSchemaDTO";
 import { AppError } from "../errors/AppError";
 import { Repository } from "typeorm";
-import { Setor } from "../entities/Setor";
-import { DataSource } from "typeorm/browser";
 import { hash } from "bcryptjs";
 import { Colaborador } from "../entities/Colaborador";
+import { Jornada } from "../entities/Jornada";
 import { CreateColaboradorSchemaDTO } from "../dto/colaborador/CreateColaboradorSchemaDTO";
+import { UserRole } from "../types/roles";
 
 export class ColaboradorService {
     private colaRepo: Repository<Colaborador>;
-    private setorRepo: Repository<Setor>;
+    private jornadaRepo: Repository<Jornada>;
 
     constructor() {
         this.colaRepo = appDataSource.getRepository(Colaborador)
-        this.setorRepo = appDataSource.getRepository(Setor)
+        this.jornadaRepo = appDataSource.getRepository(Jornada)
     }
 
     async findByEmail(email: string) {
-        return await this.colaRepo.findOne({ where: { email } });
+        return this.colaRepo.findOne({ where: { email } });
     }
-
-    // async findById(id: string) {
-    //     return await this.colaRepo.findOne({ where: { id_colaborador} });
-    // }
 
     async findAll() {
-        return await this.colaRepo.find({ relations: { setor: true } as any});
+        return this.colaRepo.find({ relations: ["jornada"] });
     }
 
-    async createUsuario(colaboradorData: CreateColaboradorSchemaDTO) {
+    async findById(id: string) {
+        return this.colaRepo.findOne({
+            where: { id_colaborador: id },
+            relations: ["jornada"]
+        });
+    }
 
-        const usuario = await this.findByEmail(colaboradorData.email);
+    async toggleStatus(id: string) {
+        const colaborador = await this.findById(id)
+        if (!colaborador) {
+            throw new AppError("Colaborador nao encontrado", 404)
+        }
+        colaborador.ativo = !colaborador.ativo
+        const salvo = await this.colaRepo.save(colaborador)
+        return { id: salvo.id_colaborador, ativo: salvo.ativo }
+    }
 
-        console.log(usuario)
-        console.log(colaboradorData)
-
-
-        if (usuario) {
-            throw new AppError("Usuario ja cadastrado!", 409);
+    async createColaborador(dados: CreateColaboradorSchemaDTO) {
+        const existente = await this.findByEmail(dados.email);
+        if (existente) {
+            throw new AppError("Email ja cadastrado", 409);
         }
 
-        
-        const senha_hash = await hash(colaboradorData.senha, 10);
-        console.log("hash gerado: ", senha_hash)
-        const novoUsuario = await this.colaRepo.save({
-            nome: colaboradorData.nome,
-            email: colaboradorData.email,
-            matricula: colaboradorData.matricula,
-            senha: senha_hash,
-            cargo: colaboradorData.cargo,
-            setor: colaboradorData.setor
+        const jornada = await this.jornadaRepo.findOne({ where: { turno: dados.jornada as any } });
+        if (!jornada) {
+            throw new AppError("Jornada nao encontrada para o turno informado", 404);
+        }
 
-           
+        const senhaHash = await hash(dados.senha, 10);
+
+        const novoColaborador = this.colaRepo.create({
+            nome: dados.nome,
+            email: dados.email,
+            matricula: dados.matricula,
+            senha: senhaHash,
+            cargo: dados.cargo as any,
+            setor: dados.setor as any,
+            perfil: (dados.perfil ?? UserRole.COLABORADOR) as UserRole,
+            ativo: dados.ativo ?? true,
+            jornada,
         });
 
-        console.log("novo usuario: ", novoUsuario)
-    
+        const salvo = await this.colaRepo.save(novoColaborador);
 
-        return novoUsuario;
+        const resultado = salvo as Partial<Colaborador> & { senha?: string };
+        delete resultado.senha;
+        return resultado;
     }
-
-
-    // async updateUsuario(id: string, userUpdate: UpdateUserSchemaDTO) {
-    //     const usuario = await this.findById(id);
-
-    //     if (!usuario) {
-    //         throw new AppError("Usuario nao encontrado!", 404);
-    //     }
-
-    //     if (userUpdate.email && userUpdate.email !== usuario.email) {
-    //         const emailEmUso = await this.findByEmail(userUpdate.email);
-    //         if (emailEmUso) {
-    //             throw new AppError("Email ja cadastrado!", 409);
-    //         }
-    //     }
-
-    //     let setor;
-
-    //     if (userUpdate.setor) {
-    //         setor = await this.setorRepo.findOne({
-    //             where: { id: userUpdate.setor },
-    //         });
-
-    //         if (!setor) {
-    //             throw new AppError("Setor nao encontrado!", 404);
-    //         }
-    //     }
-
-    //     Object.assign(usuario, {
-    //         ...userUpdate,
-    //         ...(setor && { setor }),
-    //     });
-
-    //     return await this.userRepo.save(usuario);
-    // }
-
-    // async deleteUsuario(id: string) {
-    //     const result = await this.userRepo.delete(id);
-
-    //     if (result.affected === 0) {
-    //         throw new AppError("Usuario nao encontrado!", 404);
-    //     }
-    // }
 }

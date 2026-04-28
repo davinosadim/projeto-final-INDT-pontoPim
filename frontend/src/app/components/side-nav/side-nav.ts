@@ -1,48 +1,43 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
-  selector: 'app-side-nav',
-  imports: [],
-  templateUrl: './side-nav.html',
-  styleUrl: './side-nav.css',
+    selector: 'app-side-nav',
+    imports: [RouterLink, RouterLinkActive],
+    templateUrl: './side-nav.html',
+    styleUrl: './side-nav.css',
 })
 export class SideNav {
-  user = {
-    name: 'Davino Sadim',
-    department: 'Development',
-    avatarUrl: 'https://placehold.co/80x80',
-  };
+    private authService = inject(AuthService);
+    private router = inject(Router);
 
-  menuItems = [
-    {
-      label: 'Dashboard',
-      icon: 'dashboard',
-      active: true,
-      route: '/dashboard',
-    },
-    {
-      label: 'Time Logs',
-      icon: 'history_toggle_off',
-      active: false,
-      route: '/time-logs',
-    },
-    {
-      label: 'Schedule',
-      icon: 'calendar_month',
-      active: false,
-      route: '/schedule',
-    },
-    {
-      label: 'Requests',
-      icon: 'pending_actions',
-      active: false,
-      route: '/requests',
-    },
-    {
-      label: 'Settings',
-      icon: 'settings',
-      active: false,
-      route: '/settings',
-    },
-  ];
+    readonly usuario = computed(() => this.authService.usuario());
+
+    readonly iniciais = computed(() => {
+        const nome = this.usuario()?.nome ?? '';
+        return nome.split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase();
+    });
+
+    readonly menuItems = computed(() => {
+        const perfil = this.authService.perfil();
+        if (perfil === 'gestor') {
+            return [
+                { label: 'Equipe', icon: 'groups', route: '/app/equipe' },
+            ];
+        }
+        if (perfil === 'rh') {
+            return [
+                { label: 'Colaboradores', icon: 'badge', route: '/app/colaboradores' },
+            ];
+        }
+        return [
+            { label: 'Meu Ponto', icon: 'fingerprint', route: '/app/meu-ponto' },
+        ];
+    });
+
+    sair() {
+        this.authService.logout();
+        this.router.navigate(['/auth/login']);
+    }
 }

@@ -1,1 +1,12 @@
-
+<nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 flex justify-around py-2">
+  @for (item of items(); track item.route) {
+    <a
+      [routerLink]="item.route"
+      routerLinkActive="text-blue-900"
+      class="flex flex-col items-center gap-1 px-4 py-2 text-slate-500 transition-colors"
+    >
+      <span class="material-symbols-outlined text-[24px]">{{ item.icon }}</span>
+      <span class="text-[10px] font-semibold uppercase tracking-wide">{{ item.label }}</span>
+    </a>
+  }
+</nav>

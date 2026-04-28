@@ -1,1 +1,58 @@
-<p>daily-summary works!</p>
+<section class="bg-white border border-slate-200 rounded-xl p-6">
+  <div class="flex items-center justify-between mb-5">
+    <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-widest">
+      Resumo do Dia
+    </h3>
+
+    <span
+      class="text-xs font-semibold px-3 py-1 rounded-full border"
+      [class]="statusClass()"
+    >
+      {{ statusLabel() }}
+    </span>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+    <div class="flex flex-col gap-1">
+      <span class="text-xs text-slate-500 font-medium">Trabalhadas</span>
+      <span class="text-2xl font-bold text-blue-900 tabular-nums">
+        {{ horasTrabalhadasFmt() }}
+      </span>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <span class="text-xs text-slate-500 font-medium">Esperadas</span>
+      <span class="text-2xl font-bold text-slate-600 tabular-nums">
+        {{ horasEsperadasFmt() }}
+      </span>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <span class="text-xs text-slate-500 font-medium">Horas Extras</span>
+      <span
+        class="text-2xl font-bold tabular-nums"
+        [class.text-emerald-600]="temHorasExtras()"
+        [class.text-slate-300]="!temHorasExtras()"
+      >
+        {{ horasExtrasFmt() }}
+      </span>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <span class="text-xs text-slate-500 font-medium">Atraso</span>
+      <span
+        class="text-2xl font-bold tabular-nums"
+        [class.text-red-600]="temAtraso()"
+        [class.text-slate-300]="!temAtraso()"
+      >
+        @if (temAtraso()) {
+          {{ atrasoMinutos() }}min
+        } @else {
+          00min
+        }
+      </span>
+    </div>
+
+  </div>
+</section>

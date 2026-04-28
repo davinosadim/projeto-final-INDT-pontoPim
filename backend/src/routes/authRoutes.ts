@@ -16,7 +16,7 @@ const authController: AuthController = new AuthController(authService, refreshTo
 const authRouter = Router();
 
 
-authRouter.post("/", validate(loginSchemaDTO), authController.login.bind(authController));
+authRouter.post("/login", validate(loginSchemaDTO), authController.login.bind(authController));
 authRouter.post("/refresh", validate(refreshSchema), authController.refresh.bind(authController));
 authRouter.post("/logout", authMiddleware, authController.logout.bind(authController));
 //authRouter.post("/register", validate(createUserSchema), authController.register.bind(authController));

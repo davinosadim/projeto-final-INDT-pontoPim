@@ -1,50 +1,87 @@
-<app-top-bar></app-top-bar>
+<app-top-bar />
 
 <div class="flex pt-16 min-h-screen bg-[#f8f9ff] text-[#0b1c30]">
-  <app-side-nav></app-side-nav>
+  <app-side-nav />
 
   <main class="flex-1 overflow-y-auto px-6 md:px-12 py-10 pb-32 lg:pb-10">
     <div class="max-w-4xl mx-auto space-y-10">
 
+      <!-- Cabeçalho com saudação e relógio -->
       <section class="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <h1 class="text-3xl font-semibold text-blue-900 mb-1">
-            Olá, Davino!
+            Olá, {{ nomeUsuario() }}!
           </h1>
-
-          <p class="text-sm text-slate-600">
-            Quarta-feira, 24 de Maio de 2024
+          <p class="text-sm text-slate-600 capitalize">
+            {{ dataHoje() }}
           </p>
         </div>
 
         <div class="text-right">
-          <span class="text-6xl font-bold text-blue-900 block">
-            12:30
+          <span class="text-6xl font-bold text-blue-900 block tabular-nums">
+            {{ horaAtualFormatada() }}
           </span>
-
           <span class="text-xs font-semibold text-slate-500 uppercase tracking-widest">
-            Horário de Brasília
+            Horário de Manaus
           </span>
         </div>
       </section>
 
+      <!-- Feedback de erro -->
+      @if (erro()) {
+        <div class="flex items-center gap-3 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-red-800">
+          <span class="material-symbols-outlined text-red-600">error</span>
+          <p class="text-sm font-medium">{{ erro() }}</p>
+        </div>
+      }
 
-      <app-punch-action-card
-       [proximaBatida]="proximaBatida"
-        (registrar)="registrarPonto()"
-      >
-      </app-punch-action-card>
+      <!-- Estado de carregamento inicial -->
+      @if (carregando()) {
+        <div class="flex flex-col items-center justify-center py-16 gap-4">
+          <div class="w-10 h-10 border-4 border-blue-900 border-t-transparent rounded-full animate-spin"></div>
+          <p class="text-slate-500 text-sm">Carregando seu ponto...</p>
+        </div>
+      }
 
-      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        @for (batida of batidas; track batida.titulo) {
-          <app-punch-card [batida]="batida"></app-punch-card>
+      @if (!carregando()) {
+
+        <!-- Card de ação: próxima batida ou jornada concluída -->
+        @if (proximaBatidaLabel()) {
+          <app-punch-action-card
+            [proximaBatida]="proximaBatidaLabel()!"
+            [carregando]="registrando()"
+            (registrar)="registrarPonto()"
+          />
+        } @else {
+          <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-8 flex flex-col items-center gap-3">
+            <span class="material-symbols-outlined text-emerald-600 text-5xl">task_alt</span>
+            <p class="text-emerald-800 font-semibold text-xl">Jornada concluída!</p>
+            <p class="text-emerald-700 text-sm">Todas as batidas do dia foram registradas com sucesso.</p>
+          </div>
         }
-      </section>
 
+        <!-- Grade de batidas -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          @for (batida of batidas(); track batida.tipo) {
+            <app-punch-card [batida]="batida" />
+          }
+        </section>
 
+        <!-- Resumo diário -->
+        @if (resumo()) {
+          <app-daily-summary
+            [horasTrabalhadas]="resumo()!.horasTrabalhadas"
+            [horasExtras]="resumo()!.horasExtras"
+            [horasEsperadas]="resumo()!.horasEsperadas"
+            [atrasoMinutos]="resumo()!.atrasoMinutos"
+            [status]="resumo()!.status"
+          />
+        }
+
+      }
 
     </div>
   </main>
 </div>
 
-
+<app-bottom-nav />
