@@ -5,9 +5,6 @@ import { appDataSource } from "../database/data-source";
 import { TiposRegistros } from "../types/registros";
 
 
-
-
-
 export class RegistroPontoService {
     
     private registroRespository: Repository<RegistroPonto>
@@ -60,40 +57,53 @@ export class RegistroPontoService {
             throw new Error("Todas as batidas do dia ja foram registradas")
         }
 
-       
+        const tipoAtual = sequenciaBatidas[registroHoje.length]
 
-        const proximoTipo = sequenciaBatidas[registroHoje.length]
-
-        if (!proximoTipo) {
-            throw new Error("Nao foi possivel encontrar a batida")
+        if (!tipoAtual) {
+            throw new Error("Tipo de batida invalida")
         }
 
-        const agora = new Date()
-
-
-            
-        const novoRegistro = this.registroRespository.create({
+         const novoRegistro = this.registroRespository.create({
             colaborador,
-            tipo: proximoTipo,
-            timestamp: agora,
-            justificativa: null,
-            registradoPor: null
+            tipo: tipoAtual,
+            timestamp: new Date()
 
         })
 
+        const registroSalvo = await this.registroRespository.save(novoRegistro)
+
+        const registrosAtualizados = await this.registroRespository.find({
+            where: {
+                colaborador: { id_colaborador: colaboradorId },
+                timestamp: Between(inicioDia, fimDia)
+            },
+            relations: ["colaborador"],
+            order: {
+                timestamp: "ASC"
+            }
+
+        })
+
+        const proximaBatida = registrosAtualizados.length < sequenciaBatidas.length ? sequenciaBatidas[registrosAtualizados.length] : null
+         
+       
+
         console.log(colaborador)
 
-        const registroSalvo = await this.registroRespository.save(novoRegistro)
+        
 
 
         console.log("colaboradorId:", colaboradorId);
         console.log("colaborador:", colaborador);
         console.log("registrosHoje:", registroHoje.length);
-        console.log("proximoTipo:", proximoTipo);
+        console.log("proximoTipo:", tipoAtual);
 
         return {
             mensagem: "Batida registrada com sucesso",
-            registro: registroSalvo
+            registro: registroSalvo,
+            registroHoje: registrosAtualizados,
+            batidaRegistrada: tipoAtual,
+            proximaBatida
         }
     }
 }

@@ -15,11 +15,10 @@ export class RegistroPontoService {
 
 
     return this.http.post<RegistroResponse>(`${environment.apiUrl}/registrarPonto/`, 
-      { tipo },
+      {tipo},
       { headers: {
         Authorization: `Bearer ${token}`
       }}
     )
   }
-
 }

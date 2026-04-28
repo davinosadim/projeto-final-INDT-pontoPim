@@ -6,6 +6,7 @@ import { PunchCard } from '../../components/punch-card/punch-card';
 import { PunchCardData } from '../../components/punch-card/punch-card';
 import { RegistroPontoService } from '../../services/registro-ponto.service';
 
+
 export enum TipoBatida  {
   ENTRADA = 'entrada', 
   SAIDA_ALMOCO = 'saida_almoco', 
@@ -21,7 +22,6 @@ export enum TipoBatida  {
 })
 export class MeuPonto {
 
-  
   proximaBatida: TipoBatida = TipoBatida.ENTRADA;
 
   batidas: PunchCardData[] = [
@@ -65,63 +65,50 @@ export class MeuPonto {
   registrarPonto() {
 
     this.pontoService.registrarPonto(this.proximaBatida).subscribe({
-      next: (response) => {
-        const registro = response.registro
+      next: (res) => {
+        this.atualizarBatidaNaTela(
+          res.registro.tipo as TipoBatida,
+          res.registro.timestamp
+        )
+    
 
-        this.atualizarBatidaNaTela(registro.tipo as TipoBatida, registro.timestamp)
-        this.definirProximaBatida()
-
-        console.log("Ponto registrado:", response)
       }
     })
-   
-  }
+ }
 
-  definirProximaBatida() {
-    const proximoCard = this.batidas.find( 
-      (batida) => batida.status !== "registrado"
-    )
+ definirProximaBatida() {
+  this.pontoService.registrarPonto(this.proximaBatida).subscribe({
+    next: (res) => {
+      
+      this.atualizarBatidaNaTela(
+        res.registro.tipo as TipoBatida,
+        res.registro.timestamp
+      )
 
-    if (!proximoCard) return
+    }
+  })
+ }
 
-    proximoCard.status = "pendente"
-    proximoCard.detalhe = "Aguardando..."
-    proximoCard.icone = "schedule"
+ atualizarBatidaNaTela(tipo: TipoBatida, timestamp: string) {
 
-    this.proximaBatida = proximoCard.tipo
-  }
+  const horario = new Date(timestamp).toLocaleTimeString('pt-BR', {
+    hour: '2-digit',
+    minute: '2-digit'
+  })
 
+  this.batidas = this.batidas.map((batida) => {
 
-  atualizarBatidaNaTela(tipo: TipoBatida, timestamp: string) {
-    console.log('Tipo backend:', tipo);
-    console.log('Batidas:', this.batidas);
+    if (batida.tipo !== tipo) {
+      return batida
+    }
 
-
-    const hora = new Date(timestamp).toLocaleTimeString("pt-BR", {
-      hour: "2-digit",
-      minute: "2-digit"
-    })
-
-    const item = this.batidas.find(b => b.tipo === tipo)
-
-    console.log('Card encontrado:', item);
-
-    if (!item) return
-
-    item.horario = hora
-    item.detalhe = `Registrado às ${hora}`
-    item.status = 'registrado'
-    item.icone = 'check_circle'
-  }
-
-  get proximaBatidaLabel() {
-    const card = this.batidas.find(
-      (batida) => batida.tipo === this.proximaBatida
-    )
-
-    return card?.titulo ?? "Ponto"
-  }
-
-
-
+    return {
+      ...batida,
+      horario: horario,
+      detalhe: `Registrado as ${horario}`,
+      status: "registrado",
+      icone: "check_circle"
+    }
+  })
+ }
 }
