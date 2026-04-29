@@ -1,3 +1,4 @@
+import { Component, Signal } from '@angular/core';
 import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { TopBar } from '../../components/top-bar/top-bar';
 import { SideNav } from '../../components/side-nav/side-nav';
@@ -6,6 +7,14 @@ import { PunchActionCard } from '../../components/punch-action-card/punch-action
 import { PunchCard, PunchCardData } from '../../components/punch-card/punch-card';
 import { DailySummary } from '../../components/daily-summary/daily-summary';
 import { RegistroPontoService } from '../../services/registro-ponto.service';
+import { signal } from '@angular/core';
+
+
+export enum TipoBatida  {
+  ENTRADA = 'entrada', 
+  SAIDA_ALMOCO = 'saida_almoco', 
+  RETORNO_ALMOCO = 'retorno_almoco', 
+  SAIDA = 'saida'
 import { AuthService } from '../../auth/auth.service';
 import { RegistroBatida, ResumoDiario, TipoBatida } from '../../../interfaces/registroPonto.interfaces';
 
@@ -32,6 +41,71 @@ function formatarHorario(timestamp: string): string {
     templateUrl: './meu-ponto.html',
     styleUrl: './meu-ponto.css',
 })
+export class MeuPonto {
+
+  proximaBatida: TipoBatida = TipoBatida.ENTRADA;
+
+  batidas = signal<PunchCardData[]>([
+    {
+      tipo: TipoBatida.ENTRADA,
+      titulo: 'Entrada',
+      horario: '--:--',
+      detalhe: 'Aguardando...',
+      status: 'pendente',
+      icone: 'check_circle',
+    },
+    {
+      tipo: TipoBatida.SAIDA_ALMOCO,
+      titulo: 'Almoço Saída',
+      horario: '--:--',
+      detalhe: 'Indisponivel',
+      status: 'bloqueado',
+      icone: 'block',
+    },
+    {
+      tipo: TipoBatida.RETORNO_ALMOCO,
+      titulo: 'Almoço Retorno',
+      horario: '--:--',
+      detalhe: 'Indisponível',
+      status: 'bloqueado',
+      icone: 'block',
+    },
+    {
+      tipo: TipoBatida.SAIDA,
+      titulo: 'Saída Final',
+      horario: '--:--',
+      detalhe: 'Indisponível',
+      status: 'bloqueado',
+      icone: 'block',
+    },
+  ]);
+
+  constructor(private pontoService: RegistroPontoService) {}
+
+
+  registrarPonto() {
+
+    this.pontoService.registrarPonto(this.proximaBatida).subscribe({
+      next: (res) => {
+        this.atualizarBatidaNaTela(
+          res.registro.tipo as TipoBatida,
+          res.registro.timestamp
+        )
+    
+
+      }
+    })
+ }
+
+ definirProximaBatida() {
+  this.pontoService.registrarPonto(this.proximaBatida).subscribe({
+    next: (res) => {
+      
+      this.atualizarBatidaNaTela(
+        res.registro.tipo as TipoBatida,
+        res.registro.timestamp
+      )
+
 export class MeuPonto implements OnInit, OnDestroy {
     private pontoService = inject(RegistroPontoService);
     private authService = inject(AuthService);
@@ -121,6 +195,31 @@ export class MeuPonto implements OnInit, OnDestroy {
         this.carregarHoje();
     }
 
+ atualizarBatidaNaTela(tipo: TipoBatida, timestamp: string) {
+
+  const horario = new Date(timestamp).toLocaleTimeString('pt-BR', {
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+
+  this.batidas.update((batidas) =>
+  batidas.map((batida) => {
+    if (batida.tipo !== tipo) {
+      return batida;
+    }
+
+    return {
+      ...batida,
+      horario,
+      detalhe: `Registrado às ${horario}`,
+      status: 'registrado',
+      icone: 'check_circle'
+    };
+  })
+);
+
+
+ }
     ngOnDestroy() {
         clearInterval(this._clockInterval);
     }

@@ -45,6 +45,9 @@
 
       @if (!carregando()) {
 
+      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        @for (batida of batidas(); track batida.titulo) {
+          <app-punch-card [batida]="batida"></app-punch-card>
         <!-- Card de ação: próxima batida ou jornada concluída -->
         @if (proximaBatidaLabel()) {
           <app-punch-action-card

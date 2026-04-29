@@ -1,10 +1,16 @@
 import { Routes } from '@angular/router';
+import { MeuPonto } from './pages/meu-ponto/meu-ponto';
+import { Login } from './pages/login/login';
+import { DashboardGestor } from './pages/dashboard-gestor/dashboard-gestor';
 import { authGuard, publicGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
 
+    { path: "meuPonto", component: MeuPonto},
+    { path: "auth/login", component: Login},
+    { path: "app/dashboard", component: DashboardGestor}
     {
         path: 'auth/login',
         canActivate: [publicGuard],
@@ -35,4 +41,5 @@ export const routes: Routes = [
     },
 
     { path: '**', redirectTo: 'auth/login' }
+
 ];
