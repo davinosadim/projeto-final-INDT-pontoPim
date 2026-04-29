@@ -1,24 +1,17 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { HttpClient} from '@angular/common/http';
-import { RegistroResponse } from '../../interfaces/registroPonto.interfaces';
+import { PontoHojeResponse, RegistrarPontoResponse } from '../../interfaces/registroPonto.interfaces';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class RegistroPontoService {
+    private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) {}
+    getHoje() {
+        return this.http.get<PontoHojeResponse>(`${environment.apiUrl}/registrarPonto/hoje`);
+    }
 
-  registrarPonto(tipo: string) {
-    const token = localStorage.getItem("token")
-
-
-    return this.http.post<RegistroResponse>(`${environment.apiUrl}/registrarPonto/`, 
-      {tipo},
-      { headers: {
-        Authorization: `Bearer ${token}`
-      }}
-    )
-  }
+    registrarPonto() {
+        return this.http.post<RegistrarPontoResponse>(`${environment.apiUrl}/registrarPonto`, {});
+    }
 }

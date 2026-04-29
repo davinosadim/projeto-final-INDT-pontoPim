@@ -11,7 +11,7 @@ export class RefreshToken {
     @Column({type: "varchar", unique: true})
     jti!: string
 
-    @ManyToOne(() => Colaborador, (colaborador) => colaborador.token)
+    @ManyToOne(() => Colaborador, (colaborador) => colaborador.tokens)
     @JoinColumn({name: "token_id"})
     colaborador!: Colaborador
 

@@ -7,23 +7,23 @@
     <p class="text-xs font-semibold text-blue-900 tracking-wide uppercase">
       Próximo registro esperado
     </p>
-
     <h2 class="text-2xl font-semibold text-slate-900">
-      {{ proximaBatida }}
+      {{ proximaBatida() }}
     </h2>
   </div>
 
   <button
     type="button"
     (click)="onRegistrar()"
-    class="z-10 w-full max-w-md h-16 bg-emerald-700 text-white rounded-lg text-sm font-semibold flex items-center justify-center gap-3 hover:bg-emerald-800 active:scale-95 transition-all shadow-lg shadow-emerald-700/20"
+    [disabled]="carregando()"
+    class="z-10 w-full max-w-md h-16 bg-emerald-700 text-white rounded-lg text-sm font-semibold flex items-center justify-center gap-3 hover:bg-emerald-800 active:scale-95 transition-all shadow-lg shadow-emerald-700/20 disabled:opacity-60 disabled:cursor-not-allowed"
   >
-    <span class="material-symbols-outlined text-xl">
-      login
-    </span>
-
-    Registrar {{ proximaBatida }}
+    @if (carregando()) {
+      <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+      Registrando...
+    } @else {
+      <span class="material-symbols-outlined text-xl">login</span>
+      Registrar {{ proximaBatida() }}
+    }
   </button>
-
-
 </section>

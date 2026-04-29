@@ -6,7 +6,6 @@ import { jwtConfig } from "../config/jwt.config";
 import jwt from "jsonwebtoken";
 import { AppError } from "../errors/AppError";
 
-
 export class RefreshTokenService {
 
     private refreshRepository = appDataSource.getRepository(RefreshToken)
@@ -16,40 +15,36 @@ export class RefreshTokenService {
         let payload: JwtPayload
 
         try {
-            payload = jwt.verify(
-                refreshTokenJWT,
-                jwtConfig.refresh.secret
-            ) as JwtPayload
-            
-        } catch (error) {
-            throw new AppError("Refresh token invalido")
-            
+            payload = jwt.verify(refreshTokenJWT, jwtConfig.refresh.secret) as JwtPayload
+        } catch {
+            throw new AppError("Refresh token invalido", 401)
         }
-        
+
         if (payload.type !== "refresh" || !payload.jti || !payload.sub) {
-            throw new AppError("Refresh token invalido")
+            throw new AppError("Refresh token invalido", 401)
         }
 
         const session = await this.refreshRepository.findOne({
-            where: {jti: payload.jti},
-            relations: ["user"]
+            where: { jti: payload.jti },
+            relations: ["colaborador"]
         })
 
-        if(!session) {
-            throw new AppError("Sessao expirada")
+        if (!session) {
+            throw new AppError("Sessao expirada", 401)
         }
 
-        const acessToken = jwt.sign({
-            sub: session.colaborador.id_colaborador,
-            email: session.colaborador.email,
-            type: "acess"
-        }, 
-        jwtConfig.access.secret,
-        {
-            expiresIn: jwtConfig.access.expiresIn!
-        }
-    )
+        const acessToken = jwt.sign(
+            {
+                sub: session.colaborador.id_colaborador,
+                email: session.colaborador.email,
+                nome: session.colaborador.nome,
+                perfil: session.colaborador.perfil,
+                type: "acess"
+            },
+            jwtConfig.access.secret,
+            { expiresIn: jwtConfig.access.expiresIn! }
+        )
 
-    return acessToken
+        return { acessToken }
     }
 }
