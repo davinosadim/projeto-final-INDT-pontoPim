@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, Signal } from '@angular/core';
 import { TopBar } from '../../components/top-bar/top-bar';
 import { SideNav } from '../../components/side-nav/side-nav';
 import { PunchActionCard } from '../../components/punch-action-card/punch-action-card';
 import { PunchCard } from '../../components/punch-card/punch-card';
 import { PunchCardData } from '../../components/punch-card/punch-card';
 import { RegistroPontoService } from '../../services/registro-ponto.service';
+import { signal } from '@angular/core';
 
 
 export enum TipoBatida  {
@@ -24,10 +25,10 @@ export class MeuPonto {
 
   proximaBatida: TipoBatida = TipoBatida.ENTRADA;
 
-  batidas: PunchCardData[] = [
+  batidas = signal<PunchCardData[]>([
     {
       tipo: TipoBatida.ENTRADA,
-      titulo: 'Entrada 1',
+      titulo: 'Entrada',
       horario: '--:--',
       detalhe: 'Aguardando...',
       status: 'pendente',
@@ -57,7 +58,7 @@ export class MeuPonto {
       status: 'bloqueado',
       icone: 'block',
     },
-  ];
+  ]);
 
   constructor(private pontoService: RegistroPontoService) {}
 
@@ -96,19 +97,22 @@ export class MeuPonto {
     minute: '2-digit'
   })
 
-  this.batidas = this.batidas.map((batida) => {
-
+  this.batidas.update((batidas) =>
+  batidas.map((batida) => {
     if (batida.tipo !== tipo) {
-      return batida
+      return batida;
     }
 
     return {
       ...batida,
-      horario: horario,
-      detalhe: `Registrado as ${horario}`,
-      status: "registrado",
-      icone: "check_circle"
-    }
+      horario,
+      detalhe: `Registrado às ${horario}`,
+      status: 'registrado',
+      icone: 'check_circle'
+    };
   })
+);
+
+
  }
 }

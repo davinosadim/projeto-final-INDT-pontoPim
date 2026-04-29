@@ -36,7 +36,7 @@
       </app-punch-action-card>
 
       <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        @for (batida of batidas; track batida.titulo) {
+        @for (batida of batidas(); track batida.titulo) {
           <app-punch-card [batida]="batida"></app-punch-card>
         }
       </section>

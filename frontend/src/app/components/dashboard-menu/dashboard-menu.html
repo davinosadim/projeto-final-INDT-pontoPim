@@ -1,0 +1,153 @@
+<main class="min-h-[calc(100vh-64px)] bg-[#f8f9ff] p-8">
+  <header class="mb-10">
+    <h1 class="mb-2 text-3xl font-semibold text-slate-900">
+      Visão Geral da Operação
+    </h1>
+
+    <p class="text-base text-slate-600">
+      Bem-vindo, acompanhe o status em tempo real da sua equipe hoje.
+    </p>
+  </header>
+
+  <div class="mb-10 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div class="group flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-6 transition-all hover:border-blue-300">
+      <div class="mb-5 flex items-start justify-between">
+        <div class="rounded-lg bg-emerald-100 p-2 text-emerald-700 transition-colors group-hover:bg-emerald-600 group-hover:text-white">
+          <span class="material-symbols-outlined">person_check</span>
+        </div>
+
+        <span class="rounded-full bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-700">
+          92% ativos
+        </span>
+      </div>
+
+      <p class="text-sm font-semibold uppercase tracking-wider text-slate-500">
+        Colaboradores Presentes Agora
+      </p>
+
+      <p class="mt-2 text-5xl font-bold text-slate-900">
+        128
+      </p>
+    </div>
+
+    <div class="group flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-6 transition-all hover:border-blue-300">
+      <div class="mb-5 flex items-start justify-between">
+        <div class="rounded-lg bg-red-100 p-2 text-red-700 transition-colors group-hover:bg-red-600 group-hover:text-white">
+          <span class="material-symbols-outlined">schedule_send</span>
+        </div>
+
+        <span class="rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-700">
+          +4 vs ontem
+        </span>
+      </div>
+
+      <p class="text-sm font-semibold uppercase tracking-wider text-slate-500">
+        Atrasos Hoje
+      </p>
+
+      <p class="mt-2 text-5xl font-bold text-slate-900">
+        12
+      </p>
+    </div>
+
+    <div class="group flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-6 transition-all hover:border-blue-300">
+      <div class="mb-5 flex items-start justify-between">
+        <div class="rounded-lg bg-blue-100 p-2 text-blue-900 transition-colors group-hover:bg-blue-900 group-hover:text-white">
+          <span class="material-symbols-outlined">add_alarm</span>
+        </div>
+
+        <span class="rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-900">
+          Meta: &lt; 40h
+        </span>
+      </div>
+
+      <p class="text-sm font-semibold uppercase tracking-wider text-slate-500">
+        Horas Extras Semana
+      </p>
+
+      <p class="mt-2 text-5xl font-bold text-slate-900">
+        34:15
+      </p>
+    </div>
+
+    <div class="group flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-6 transition-all hover:border-blue-300">
+      <div class="mb-5 flex items-start justify-between">
+        <div class="rounded-lg bg-rose-100 p-2 text-rose-800 transition-colors group-hover:bg-rose-800 group-hover:text-white">
+          <span class="material-symbols-outlined">trending_down</span>
+        </div>
+
+        <span class="rounded-full bg-rose-100 px-2 py-1 text-xs font-medium text-rose-800">
+          Ação requerida
+        </span>
+      </div>
+
+      <p class="text-sm font-semibold uppercase tracking-wider text-slate-500">
+        Saldo Negativo
+      </p>
+
+      <p class="mt-2 text-5xl font-bold text-slate-900">
+        08
+      </p>
+    </div>
+  </div>
+
+  <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+    <div class="flex items-center justify-between border-b border-slate-100 p-8">
+      <div>
+        <h2 class="text-2xl font-semibold text-slate-900">
+          Colaboradores em Alerta
+        </h2>
+
+        <p class="mt-1 text-base text-slate-500">
+          Colaboradores com mais de 5h extras acumuladas esta semana.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-blue-900 transition-colors hover:bg-blue-50"
+      >
+        Ver todos
+        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+      </button>
+    </div>
+
+    <div class="divide-y divide-slate-100">
+      <div class="flex items-center justify-between p-6 transition-colors hover:bg-slate-50">
+        <div>
+          <p class="font-semibold text-slate-900">Ana Beatriz Silveira</p>
+          <p class="text-sm text-slate-500">Desenvolvimento Fullstack • ID: 4529</p>
+        </div>
+
+        <div class="text-right">
+          <p class="text-xs uppercase text-slate-400">Total H.E.</p>
+          <p class="text-2xl font-semibold text-rose-800">08:45</p>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between p-6 transition-colors hover:bg-slate-50">
+        <div>
+          <p class="font-semibold text-slate-900">Ricardo Mendonça</p>
+          <p class="text-sm text-slate-500">Analista Contábil Pleno • ID: 3102</p>
+        </div>
+
+        <div class="text-right">
+          <p class="text-xs uppercase text-slate-400">Total H.E.</p>
+          <p class="text-2xl font-semibold text-rose-800">06:20</p>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between p-6 transition-colors hover:bg-slate-50">
+        <div>
+          <p class="font-semibold text-slate-900">Juliana Costa</p>
+          <p class="text-sm text-slate-500">Coordenadora de Vendas • ID: 2988</p>
+        </div>
+
+        <div class="text-right">
+          <p class="text-xs uppercase text-slate-400">Total H.E.</p>
+          <p class="text-2xl font-semibold text-rose-800">05:55</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
