@@ -1,21 +1,17 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-
+import { Component, input, output } from '@angular/core';
 
 @Component({
-  selector: 'app-punch-action-card',
-  imports: [],
-  templateUrl: './punch-action-card.html',
-  styleUrl: './punch-action-card.css',
+    selector: 'app-punch-action-card',
+    imports: [],
+    templateUrl: './punch-action-card.html',
+    styleUrl: './punch-action-card.css',
 })
 export class PunchActionCard {
-  
-  @Input() proximaBatida = 'Saída para Almoço';
+    proximaBatida = input.required<string>();
+    carregando = input(false);
+    registrar = output<void>();
 
-  @Output() registrar = new EventEmitter<void>();
-
-  onRegistrar() {
-    this.registrar.emit();
-
-}
-
+    onRegistrar() {
+        this.registrar.emit();
+    }
 }

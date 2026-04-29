@@ -1,7 +1,12 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm";
 import * as dotenv from "dotenv"
-
+import { Colaborador } from "../entities/Colaborador";
+import { Jornada } from "../entities/Jornada";
+import { RegistroPonto } from "../entities/RegistroPonto";
+import { ResumoDiario } from "../entities/ResumoDiario";
+import { AjustePonto } from "../entities/AjustePonto";
+import { RefreshToken } from "../entities/RefreshToken";
 
 dotenv.config()
 
@@ -14,12 +19,7 @@ export const appDataSource = new DataSource({
     database: process.env.DB_DATABASE as string,
     synchronize: true,
     logging: false,
-    entities: ['src/entities/**/*.ts'],
+    entities: [Colaborador, Jornada, RegistroPonto, ResumoDiario, AjustePonto, RefreshToken],
     migrations: [],
     subscribers: []
-    
-
-
-
 })
-

@@ -1,57 +1,43 @@
-<nav
-  class="hidden lg:flex flex-col h-full w-64 bg-slate-50 border-r border-slate-200 py-8 px-4 gap-2"
->
+<nav class="hidden lg:flex flex-col h-full w-64 bg-slate-50 border-r border-slate-200 py-8 px-4 gap-2">
+
+  <!-- Avatar + usuário -->
   <div class="flex items-center gap-3 px-2 mb-8">
-    <img
-      [src]="user.avatarUrl"
-      alt="Foto do colaborador"
-      class="w-10 h-10 rounded-full object-cover"
-    />
+    <div class="w-10 h-10 rounded-full bg-blue-900 text-white flex items-center justify-center text-sm font-bold shrink-0">
+      {{ iniciais() }}
+    </div>
 
-    <div class="flex flex-col">
-      <span class="text-sm font-semibold text-blue-900 leading-tight">
-        {{ user.name }}
+    <div class="flex flex-col min-w-0">
+      <span class="text-sm font-semibold text-blue-900 leading-tight truncate">
+        {{ usuario()?.nome ?? 'Colaborador' }}
       </span>
-
-      <span class="text-xs text-slate-500">
-        {{ user.department }}
+      <span class="text-xs text-slate-500 capitalize">
+        {{ usuario()?.perfil ?? '' }}
       </span>
     </div>
   </div>
 
-  @for (item of menuItems; track item.label) {
+  <!-- Itens de menu -->
+  @for (item of menuItems(); track item.route) {
     <a
-      [href]="item.route"
-      class="flex items-center gap-3 px-4 py-3 rounded text-sm transition-transform active:scale-[0.98]"
-      [class.bg-blue-50]="item.active"
-      [class.text-blue-900]="item.active"
-      [class.border-r-4]="item.active"
-      [class.border-blue-900]="item.active"
-      [class.font-semibold]="item.active"
-      [class.text-slate-600]="!item.active"
-      [class.hover:bg-slate-100]="!item.active"
-      [class.hover:text-blue-800]="!item.active"
+      [routerLink]="item.route"
+      routerLinkActive="bg-blue-50 text-blue-900 border-r-4 border-blue-900 font-semibold"
+      class="flex items-center gap-3 px-4 py-3 rounded text-sm text-slate-600 transition-all hover:bg-slate-100 hover:text-blue-800 active:scale-[0.98]"
     >
-      <span class="material-symbols-outlined">
-        {{ item.icon }}
-      </span>
-
-      <span>
-        {{ item.label }}
-      </span>
+      <span class="material-symbols-outlined text-[20px]">{{ item.icon }}</span>
+      <span>{{ item.label }}</span>
     </a>
   }
 
+  <!-- Logout -->
   <div class="mt-auto px-2">
     <button
       type="button"
-      class="w-full bg-emerald-500 text-white py-3 rounded font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-all"
+      (click)="sair()"
+      class="w-full text-slate-600 py-3 rounded font-medium flex items-center justify-center gap-2 hover:bg-red-50 hover:text-red-700 transition-all text-sm"
     >
-      <span class="material-symbols-outlined">
-        timer
-      </span>
-
-      Quick Clock-In
+      <span class="material-symbols-outlined text-[20px]">logout</span>
+      Sair
     </button>
   </div>
+
 </nav>

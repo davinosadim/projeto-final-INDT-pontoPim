@@ -1,0 +1,152 @@
+<app-top-bar />
+
+<div class="flex pt-16 min-h-screen bg-[#f8f9ff] text-[#0b1c30]">
+  <app-side-nav />
+
+  <main class="flex-1 overflow-y-auto pb-32 lg:pb-10">
+<div class="flex flex-col gap-6 p-6 max-w-5xl mx-auto w-full">
+
+  <!-- Cabeçalho -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-blue-900">Equipe — Hoje</h1>
+      <p class="text-sm text-slate-500 mt-1">Acompanhamento de ponto em tempo real</p>
+    </div>
+    <button
+      type="button"
+      (click)="carregarEquipe()"
+      class="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-900 text-white text-sm font-medium hover:bg-blue-800 transition-all active:scale-95"
+    >
+      <span class="material-symbols-outlined text-[18px]">refresh</span>
+      Atualizar
+    </button>
+  </div>
+
+  <!-- Cards resumo -->
+  <div class="grid grid-cols-2 gap-4">
+    <div class="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-4">
+      <span class="material-symbols-outlined text-green-600 text-3xl">check_circle</span>
+      <div>
+        <p class="text-2xl font-bold text-green-700">{{ totalPresentes() }}</p>
+        <p class="text-sm text-green-600">Presentes</p>
+      </div>
+    </div>
+    <div class="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-4">
+      <span class="material-symbols-outlined text-red-500 text-3xl">cancel</span>
+      <div>
+        <p class="text-2xl font-bold text-red-600">{{ totalFalta() }}</p>
+        <p class="text-sm text-red-500">Sem registro</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="flex gap-2">
+    @for (op of [['ativos','Ativos'],['inativos','Inativos'],['todos','Todos']]; track op[0]) {
+      <button
+        type="button"
+        (click)="filtro.set($any(op[0]))"
+        [class]="filtro() === op[0]
+          ? 'px-4 py-1.5 rounded-full text-sm font-semibold bg-blue-900 text-white'
+          : 'px-4 py-1.5 rounded-full text-sm font-medium bg-slate-100 text-slate-600 hover:bg-slate-200'"
+      >
+        {{ op[1] }}
+      </button>
+    }
+  </div>
+
+  <!-- Estado de carregamento -->
+  @if (carregando()) {
+    <div class="flex justify-center py-16">
+      <span class="material-symbols-outlined animate-spin text-blue-600 text-4xl">progress_activity</span>
+    </div>
+  }
+
+  <!-- Erro -->
+  @if (!carregando() && erro()) {
+    <div class="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 text-sm flex items-center gap-2">
+      <span class="material-symbols-outlined text-[18px]">error</span>
+      {{ erro() }}
+    </div>
+  }
+
+  <!-- Lista de colaboradores -->
+  @if (!carregando() && !erro()) {
+    <div class="flex flex-col gap-3">
+      @for (colaborador of colaboradoresFiltrados(); track colaborador.id) {
+        <div class="bg-white border border-slate-200 rounded-xl p-4 flex flex-col gap-3 shadow-sm">
+
+          <!-- Header do card -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-blue-900 text-white flex items-center justify-center text-sm font-bold shrink-0">
+                {{ iniciais(colaborador.nome) }}
+              </div>
+              <div>
+                <p class="font-semibold text-slate-800 text-sm">{{ colaborador.nome }}</p>
+                <p class="text-xs text-slate-500">{{ colaborador.cargo }} · {{ colaborador.matricula }}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              @if (!colaborador.ativo) {
+                <span class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">Inativo</span>
+              }
+              <span [class]="'text-xs px-2.5 py-1 rounded-full font-medium ' + classStatus(colaborador.resumo?.status)">
+                {{ labelStatus(colaborador.resumo?.status) }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Batidas do dia -->
+          @if (colaborador.registros.length > 0) {
+            <div class="flex flex-wrap gap-2 border-t border-slate-100 pt-3">
+              @for (registro of colaborador.registros; track registro.tipo) {
+                <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs">
+                  <span class="text-slate-500">{{ labelTipo(registro.tipo) }}:</span>
+                  <span class="font-semibold text-slate-700">{{ formatarHora(registro.timestamp) }}</span>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="text-xs text-slate-400 border-t border-slate-100 pt-3">Nenhuma batida registrada hoje.</p>
+          }
+
+          <!-- Resumo -->
+          @if (colaborador.resumo) {
+            <div class="grid grid-cols-3 gap-2 border-t border-slate-100 pt-3">
+              <div class="text-center">
+                <p class="text-xs text-slate-400">Trabalhadas</p>
+                <p class="text-sm font-bold text-slate-700">{{ formatarHoras(colaborador.resumo.horasTrabalhadas) }}</p>
+              </div>
+              <div class="text-center">
+                <p class="text-xs text-slate-400">Extras</p>
+                <p class="text-sm font-bold" [class]="colaborador.resumo.horasExtras > 0 ? 'text-green-600' : 'text-slate-400'">
+                  {{ formatarHoras(colaborador.resumo.horasExtras) }}
+                </p>
+              </div>
+              <div class="text-center">
+                <p class="text-xs text-slate-400">Atraso</p>
+                <p class="text-sm font-bold" [class]="colaborador.resumo.atrasoMinutos > 0 ? 'text-red-500' : 'text-slate-400'">
+                  {{ colaborador.resumo.atrasoMinutos }}min
+                </p>
+              </div>
+            </div>
+          }
+
+        </div>
+      }
+
+      @if (colaboradoresFiltrados().length === 0) {
+        <div class="text-center py-12 text-slate-400">
+          <span class="material-symbols-outlined text-5xl block mb-2">group_off</span>
+          <p class="text-sm">Nenhum colaborador encontrado.</p>
+        </div>
+      }
+    </div>
+  }
+
+</div>
+  </main>
+</div>
+
+<app-bottom-nav />

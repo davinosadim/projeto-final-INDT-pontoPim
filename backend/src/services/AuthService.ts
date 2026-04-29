@@ -10,77 +10,74 @@ import { randomUUID } from "crypto"
 export class AuthService {
 
     private colaboradorRepository = appDataSource.getRepository(Colaborador)
-    private refresRepository = appDataSource.getRepository(RefreshToken)
+    private refreshRepository = appDataSource.getRepository(RefreshToken)
 
     async login(email: string, senha: string) {
-
-        console.log(email)
-
         const user = await this.colaboradorRepository.findOne({
-            where: {email},
-            select: ["id_colaborador", "email", "senha"]
+            where: { email },
+            select: ["id_colaborador", "email", "senha", "nome", "perfil", "ativo"]
         })
 
-        console.log(user)
-
         if (!user) {
-            throw new AppError("Credenciais invalidas")
+            throw new AppError("Credenciais invalidas", 401)
         }
 
+        if (!user.ativo) {
+            throw new AppError("Colaborador inativo", 403)
+        }
 
         const valid = await bcrypt.compare(senha, user.senha)
-        if(!valid) {
-            throw new AppError("Credenciais invalidas")
+        if (!valid) {
+            throw new AppError("Credenciais invalidas", 401)
         }
 
-        // variaveis para receber tokens
-        const refreshToken = await this.createRefreshToken(user)
-
+        const refreshTokenRecord = await this.createRefreshToken(user)
         const acessToken = this.generateAcessToken(user)
+        const refreshToken = this.generateRefreshToken(user, refreshTokenRecord.jti)
 
-        const refreshTokenJwt = this.generateRefreshToken(user, refreshToken.jti)
-
-        return {acessToken, refreshToken: refreshTokenJwt}
-
+        return {
+            acessToken,
+            refreshToken,
+            usuario: {
+                id: user.id_colaborador,
+                nome: user.nome,
+                email: user.email,
+                perfil: user.perfil
+            }
+        }
     }
 
-    // metodos para gerar tokens
-   private generateAcessToken(colaborador: Colaborador) {
-
-    console.log("ID indo para o access token:", colaborador.id_colaborador);
-    console.log("Email indo para o access token:", colaborador.email);
-    return jwt.sign({
-        sub: colaborador.id_colaborador,
-        email: colaborador.email,
-        type: "acess",
-    }, 
-    jwtConfig.access.secret, 
-    {
-        expiresIn: jwtConfig.access.expiresIn!
+    private generateAcessToken(colaborador: Colaborador) {
+        return jwt.sign(
+            {
+                sub: colaborador.id_colaborador,
+                email: colaborador.email,
+                nome: colaborador.nome,
+                perfil: colaborador.perfil,
+                type: "acess",
+            },
+            jwtConfig.access.secret,
+            { expiresIn: jwtConfig.access.expiresIn! }
+        )
     }
-)
-   }
 
-
-   private generateRefreshToken(colaborador: Colaborador, jti: string) { 
-    return jwt.sign( { 
-        sub: colaborador.id_colaborador, 
-        jti: jti, 
-        type: "refresh", 
-    }, 
-    jwtConfig.refresh.secret, 
-    { 
-        expiresIn: jwtConfig.refresh.expiresIn!, 
-    } 
-); 
-    } 
+    private generateRefreshToken(colaborador: Colaborador, jti: string) {
+        return jwt.sign(
+            {
+                sub: colaborador.id_colaborador,
+                jti,
+                type: "refresh",
+            },
+            jwtConfig.refresh.secret,
+            { expiresIn: jwtConfig.refresh.expiresIn! }
+        )
+    }
 
     private async createRefreshToken(colaborador: Colaborador) {
-        const token = this.refresRepository.create({
+        const token = this.refreshRepository.create({
             jti: randomUUID(),
             colaborador,
         })
-
-        return this.refresRepository.save(token)
+        return this.refreshRepository.save(token)
     }
 }

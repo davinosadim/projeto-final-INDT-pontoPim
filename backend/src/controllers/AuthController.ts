@@ -1,55 +1,46 @@
 import { Request, Response } from "express";
 import { AuthService } from "../services/AuthService";
-import { RefreshToken } from "../entities/RefreshToken";
-import { resourceLimits } from "node:worker_threads";
-import { JwtPayload } from "jsonwebtoken";
 import { LogoutService } from "../services/LogoutService";
-import jwt from "jsonwebtoken"
-import { jwtConfig } from "../config/jwt.config";
 import { RefreshTokenService } from "../services/RefreshTokenService";
+import { AppError } from "../errors/AppError";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { jwtConfig } from "../config/jwt.config";
 
 export class AuthController {
 
-    private authService: AuthService
-    private refreshTokenService: RefreshTokenService
-    private logoutService: LogoutService
-
-    constructor(authService: AuthService, refreshToken: RefreshTokenService, logoutService: LogoutService) {
-        this.authService = authService
-        this.refreshTokenService = refreshToken
-        this.logoutService = logoutService
-    }
+    constructor(
+        private authService: AuthService,
+        private refreshTokenService: RefreshTokenService,
+        private logoutService: LogoutService
+    ) {}
 
     async login(req: Request, res: Response) {
         const { email, senha } = req.body
-
-        console.log("Ola")
-
         const result = await this.authService.login(email, senha)
-
-        return res.status(200).json({status: "sucess", data: result})
+        return res.status(200).json({ status: "success", data: result })
     }
 
     async refresh(req: Request, res: Response) {
         const { refreshToken } = req.body
-
         const result = await this.refreshTokenService.execute(refreshToken)
-
-        return res.status(200).json({status: "sucess", data: result})
+        return res.status(200).json({ status: "success", data: result })
     }
 
     async logout(req: Request, res: Response) {
         const { refreshToken } = req.body
 
-        const payload = jwt.verify(refreshToken, jwtConfig.refresh.secret) as JwtPayload
-
-        if(!payload?.jti) {
-            return res.status(400).json({message: "Token invalido"})
+        let payload: JwtPayload
+        try {
+            payload = jwt.verify(refreshToken, jwtConfig.refresh.secret) as JwtPayload
+        } catch {
+            throw new AppError("Token invalido", 400)
         }
 
-        await this.logoutService.execute(payload.jti as string)
+        if (!payload?.jti) {
+            throw new AppError("Token invalido", 400)
+        }
 
-        return res.status(204).json({})
+        await this.logoutService.execute(payload.jti)
+        return res.status(204).send()
     }
-
 }

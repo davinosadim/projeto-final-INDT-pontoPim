@@ -1,13 +1,12 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Jornada } from "./Jornada";
 import { RegistroPonto } from "./RegistroPonto";
 import { ResumoDiario } from "./ResumoDiario";
 import { AjustePonto } from "./AjustePonto";
-import { HoraExtra } from "./Hora_extra";
-import { Setor } from "./Setor";
 import { RefreshToken } from "./RefreshToken";
 import { Cargos } from "../types/cargos";
 import { Setores } from "../types/setores";
+import { UserRole } from "../types/roles";
 
 @Entity("colaboradores")
 export class Colaborador {
@@ -15,32 +14,35 @@ export class Colaborador {
     @PrimaryGeneratedColumn("uuid")
     id_colaborador!: string
 
-    @Column({type: "varchar", nullable: false})
+    @Column({ type: "varchar", nullable: false })
     nome!: string
 
-    @Column({unique: true, nullable: false})
+    @Column({ unique: true, nullable: false })
     email!: string
 
-    @Column({type: "varchar", select: false})
+    @Column({ type: "varchar", select: false })
     senha!: string
-    
-    @Column({type: "varchar", nullable: false, unique: true})
+
+    @Column({ type: "varchar", nullable: false, unique: true })
     matricula!: string
 
-    @Column({type: "enum", enum: Cargos})
+    @Column({ type: "enum", enum: Cargos })
     cargo!: Cargos
 
-    @Column({type: "enum", enum: Setores})
+    @Column({ type: "enum", enum: Setores })
     setor!: Setores
 
-    @Column({type: "boolean", default: true})
+    @Column({ type: "enum", enum: UserRole, default: UserRole.COLABORADOR })
+    perfil!: UserRole
+
+    @Column({ type: "boolean", default: true })
     ativo!: boolean
 
-    @ManyToOne(() => Jornada, (jornada) => jornada.colaboradores, { cascade: true })
-    @JoinColumn({name: "jornada_id"})
+    @ManyToOne(() => Jornada, (jornada) => jornada.colaboradores, { nullable: true })
+    @JoinColumn({ name: "jornada_id" })
     jornada!: Jornada
 
-    @OneToMany(() => RegistroPonto, (registros) => registros.colaborador)
+    @OneToMany(() => RegistroPonto, (registro) => registro.colaborador)
     registros!: RegistroPonto[]
 
     @OneToMany(() => ResumoDiario, (resumo) => resumo.colaborador)
@@ -49,15 +51,9 @@ export class Colaborador {
     @OneToMany(() => AjustePonto, (ajuste) => ajuste.colaborador)
     ajustes!: AjustePonto[]
 
-    // @OneToMany(() => HoraExtra, (horaExtra) => horaExtra.colaboradorId)
-    // horasExtras!: HoraExtra[]
-
     @OneToMany(() => RegistroPonto, (registro) => registro.registradoPor)
     registroFeitos!: RegistroPonto[]
 
     @OneToMany(() => RefreshToken, (token) => token.colaborador)
-    token!: RefreshToken
-
-
-
+    tokens!: RefreshToken[]
 }
