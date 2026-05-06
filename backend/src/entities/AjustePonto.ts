@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Colaborador } from "./Colaborador";
 import { StatusAjuste } from "../types/statusAjuste";
 
@@ -12,7 +12,7 @@ export class AjustePonto {
     @JoinColumn({name: "colaborador_id"})
     colaborador!: Colaborador
 
-    @CreateDateColumn({type: "date", nullable: false})
+    @Column({type: "date", nullable: false})
     data!: Date
 
     @Column({type: "varchar"})

@@ -1,9 +1,10 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { TopBar } from '../../components/top-bar/top-bar';
 import { SideNav } from '../../components/side-nav/side-nav';
 import { BottomNav } from '../../components/bottom-nav/bottom-nav';
-import { ColaboradorListItem, ColaboradorService } from '../../services/colaborador.service';
+import { ColaboradorListItem, ColaboradorService, CreateColaboradorPayload } from '../../services/colaborador.service';
 
 const CARGOS = [
     { value: 'operador', label: 'Operador' },
@@ -40,9 +41,11 @@ const PERFIS = [
     templateUrl: './colaboradores.html',
     styleUrl: './colaboradores.css',
 })
-export class Colaboradores implements OnInit {
+export class Colaboradores implements OnInit, OnDestroy {
     private colaboradorService = inject(ColaboradorService);
     private fb = inject(FormBuilder);
+    private router = inject(Router);
+    private sucessoTimeout: ReturnType<typeof setTimeout> | null = null;
 
     readonly cargos = CARGOS;
     readonly setores = SETORES;
@@ -56,6 +59,7 @@ export class Colaboradores implements OnInit {
     readonly salvando = signal(false);
     readonly erroForm = signal<string | null>(null);
     readonly filtroBusca = signal('');
+    readonly mensagemSucesso = signal<string | null>(null);
 
     readonly form = this.fb.nonNullable.group({
         nome: ['', Validators.required],
@@ -81,6 +85,12 @@ export class Colaboradores implements OnInit {
 
     ngOnInit() {
         this.carregarColaboradores();
+    }
+
+    ngOnDestroy() {
+        if (this.sucessoTimeout) {
+            clearTimeout(this.sucessoTimeout);
+        }
     }
 
     carregarColaboradores() {
@@ -111,21 +121,47 @@ export class Colaboradores implements OnInit {
     salvar() {
         if (this.form.invalid) {
             this.form.markAllAsTouched();
+            this.erroForm.set('Preencha todos os campos obrigatorios corretamente.');
             return;
         }
         this.salvando.set(true);
         this.erroForm.set(null);
-        this.colaboradorService.create(this.form.getRawValue()).subscribe({
+        const dados: CreateColaboradorPayload = this.form.getRawValue();
+        this.colaboradorService.create(dados).subscribe({
             next: (res) => {
                 this.colaboradores.update(lista => [res.data, ...lista]);
                 this.salvando.set(false);
                 this.fecharModal();
+                this.mostrarMensagemSucesso(`O colaborador ${res.data.nome} foi cadastrado.`);
             },
             error: (err) => {
-                this.erroForm.set(err?.error?.message ?? 'Erro ao criar colaborador.');
+                this.erroForm.set(this.mensagemErroCadastro(err));
                 this.salvando.set(false);
             }
         });
+    }
+
+    private mensagemErroCadastro(err: any): string {
+        const primeiraValidacao = err?.error?.details?.issues?.[0]?.message;
+        return primeiraValidacao ?? err?.error?.message ?? 'Erro ao criar colaborador.';
+    }
+
+    mostrarMensagemSucesso(mensagem: string) {
+        if (this.sucessoTimeout) {
+            clearTimeout(this.sucessoTimeout);
+        }
+
+        this.mensagemSucesso.set(mensagem);
+        this.sucessoTimeout = setTimeout(() => this.mensagemSucesso.set(null), 4500);
+    }
+
+    fecharMensagemSucesso() {
+        if (this.sucessoTimeout) {
+            clearTimeout(this.sucessoTimeout);
+            this.sucessoTimeout = null;
+        }
+
+        this.mensagemSucesso.set(null);
     }
 
     toggleStatus(colaborador: ColaboradorListItem) {
@@ -137,6 +173,10 @@ export class Colaboradores implements OnInit {
             },
             error: () => {}
         });
+    }
+
+    abrirHistorico(colaborador: ColaboradorListItem) {
+        this.router.navigate(['/app/colaboradores', colaborador.id_colaborador, 'ponto']);
     }
 
     iniciais(nome: string): string {

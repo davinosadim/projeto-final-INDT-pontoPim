@@ -21,8 +21,51 @@ export interface CreateColaboradorPayload {
     senha: string;
     cargo: string;
     setor: string;
+    jornada: string;
     perfil: string;
     ativo: boolean;
+}
+
+export type PeriodoHistoricoPonto = 'semana' | 'mes';
+
+export interface HistoricoPontoDia {
+    data: string;
+    batidas: {
+        entrada: string | null;
+        saidaAlmoco: string | null;
+        retornoAlmoco: string | null;
+        saida: string | null;
+    };
+    horasTrabalhadas: number;
+    horasExtras: number;
+    atrasoMinutos: number;
+    status: 'completo' | 'incompleto' | 'falta' | 'afastamento';
+    destaque: 'incompleto' | 'atraso' | null;
+}
+
+export interface HistoricoPontoResponse {
+    colaborador: {
+        id: string;
+        nome: string;
+        email: string;
+        matricula: string;
+    };
+    periodo: PeriodoHistoricoPonto;
+    inicio: string;
+    fim: string;
+    dias: HistoricoPontoDia[];
+}
+
+export interface SolicitarAjustePayload {
+    data: string;
+    motivo: string;
+}
+
+export interface AjustePontoResponse {
+    id: string;
+    data: string;
+    motivo: string;
+    status: 'pendente' | 'aprovado' | 'rejeitado';
 }
 
 interface ApiResponse<T> {
@@ -44,5 +87,15 @@ export class ColaboradorService {
 
     toggleStatus(id: string) {
         return this.http.patch<ApiResponse<{ id: string; ativo: boolean }>>(`${environment.apiUrl}/colaborador/${id}/status`, {});
+    }
+
+    historicoPonto(id: string, periodo: PeriodoHistoricoPonto) {
+        return this.http.get<ApiResponse<HistoricoPontoResponse>>(`${environment.apiUrl}/colaborador/${id}/ponto`, {
+            params: { periodo }
+        });
+    }
+
+    solicitarAjustePonto(id: string, payload: SolicitarAjustePayload) {
+        return this.http.post<ApiResponse<AjustePontoResponse>>(`${environment.apiUrl}/colaborador/${id}/ponto/ajustes`, payload);
     }
 }

@@ -1,5 +1,27 @@
 <app-top-bar />
 
+@if (mensagemSucesso()) {
+  <div class="fixed right-4 top-20 z-[70] w-[calc(100%-2rem)] max-w-sm">
+    <div class="flex items-start gap-3 rounded-xl border border-blue-200 bg-white px-4 py-3 text-blue-950 shadow-xl shadow-blue-900/10 ring-1 ring-blue-900/5">
+      <div class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-900 text-white">
+        <span class="material-symbols-outlined text-[20px]">check_circle</span>
+      </div>
+      <div class="min-w-0 flex-1">
+        <p class="text-sm font-semibold text-blue-900">Cadastro realizado</p>
+        <p class="mt-0.5 text-sm leading-5 text-slate-600">{{ mensagemSucesso() }}</p>
+      </div>
+      <button
+        type="button"
+        (click)="fecharMensagemSucesso()"
+        class="rounded-lg p-1 text-slate-400 transition-colors hover:bg-blue-50 hover:text-blue-900"
+        aria-label="Fechar mensagem"
+      >
+        <span class="material-symbols-outlined text-[18px]">close</span>
+      </button>
+    </div>
+  </div>
+}
+
 <div class="flex pt-16 min-h-screen bg-[#f8f9ff] text-[#0b1c30]">
   <app-side-nav />
 
@@ -96,16 +118,27 @@
                 }
               </td>
               <td class="px-4 py-3 text-center">
-                <button
-                  type="button"
-                  (click)="toggleStatus(colaborador)"
-                  [class]="'text-xs px-3 py-1.5 rounded-lg font-medium transition-all active:scale-95 '
-                    + (colaborador.ativo
-                      ? 'bg-red-50 text-red-600 hover:bg-red-100'
-                      : 'bg-green-50 text-green-700 hover:bg-green-100')"
-                >
-                  {{ colaborador.ativo ? 'Desativar' : 'Ativar' }}
-                </button>
+                <div class="flex items-center justify-center gap-2">
+                  <button
+                    type="button"
+                    (click)="abrirHistorico(colaborador)"
+                    class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-blue-900 transition-colors hover:bg-blue-100"
+                    aria-label="Ver historico de ponto"
+                    title="Ver historico de ponto"
+                  >
+                    <span class="material-symbols-outlined text-[18px]">schedule</span>
+                  </button>
+                  <button
+                    type="button"
+                    (click)="toggleStatus(colaborador)"
+                    [class]="'text-xs px-3 py-1.5 rounded-lg font-medium transition-all active:scale-95 '
+                      + (colaborador.ativo
+                        ? 'bg-red-50 text-red-600 hover:bg-red-100'
+                        : 'bg-green-50 text-green-700 hover:bg-green-100')"
+                  >
+                    {{ colaborador.ativo ? 'Desativar' : 'Ativar' }}
+                  </button>
+                </div>
               </td>
             </tr>
           }

@@ -21,9 +21,11 @@ export class SideNav {
 
     readonly menuItems = computed(() => {
         const perfil = this.authService.perfil();
+        const usuario = this.authService.usuario();
         if (perfil === 'gestor') {
             return [
                 { label: 'Equipe', icon: 'groups', route: '/app/equipe' },
+                { label: 'Aprovacoes', icon: 'approval', route: '/app/aprovacoes' },
             ];
         }
         if (perfil === 'rh') {
@@ -33,6 +35,7 @@ export class SideNav {
         }
         return [
             { label: 'Meu Ponto', icon: 'fingerprint', route: '/app/meu-ponto' },
+            { label: 'Historico', icon: 'history', route: usuario ? `/app/colaboradores/${usuario.id}/ponto` : '/app/meu-ponto' },
         ];
     });
 

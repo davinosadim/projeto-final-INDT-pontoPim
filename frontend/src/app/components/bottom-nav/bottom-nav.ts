@@ -13,12 +13,19 @@ export class BottomNav {
 
     readonly items = computed(() => {
         const perfil = this.authService.perfil();
+        const usuario = this.authService.usuario();
         if (perfil === 'gestor') {
-            return [{ label: 'Equipe', icon: 'groups', route: '/app/equipe' }];
+            return [
+                { label: 'Equipe', icon: 'groups', route: '/app/equipe' },
+                { label: 'Aprovacoes', icon: 'approval', route: '/app/aprovacoes' },
+            ];
         }
         if (perfil === 'rh') {
             return [{ label: 'Colaboradores', icon: 'badge', route: '/app/colaboradores' }];
         }
-        return [{ label: 'Ponto', icon: 'fingerprint', route: '/app/meu-ponto' }];
+        return [
+            { label: 'Ponto', icon: 'fingerprint', route: '/app/meu-ponto' },
+            { label: 'Historico', icon: 'history', route: usuario ? `/app/colaboradores/${usuario.id}/ponto` : '/app/meu-ponto' },
+        ];
     });
 }

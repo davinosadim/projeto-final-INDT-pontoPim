@@ -1,0 +1,211 @@
+<app-top-bar />
+
+@if (mensagem()) {
+  <div class="fixed right-4 top-20 z-[70] w-[calc(100%-2rem)] max-w-sm">
+    <div class="flex items-start gap-3 rounded-xl border border-blue-200 bg-white px-4 py-3 text-blue-950 shadow-xl shadow-blue-900/10 ring-1 ring-blue-900/5">
+      <div class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-900 text-white">
+        <span class="material-symbols-outlined text-[20px]">task_alt</span>
+      </div>
+      <div class="min-w-0 flex-1">
+        <p class="text-sm font-semibold text-blue-900">Aprovacao atualizada</p>
+        <p class="mt-0.5 text-sm leading-5 text-slate-600">{{ mensagem() }}</p>
+      </div>
+    </div>
+  </div>
+}
+
+<div class="flex pt-16 min-h-screen bg-[#f8f9ff] text-[#0b1c30]">
+  <app-side-nav />
+
+  <main class="flex-1 overflow-y-auto pb-32 lg:pb-10">
+    <div class="flex w-full max-w-5xl flex-col gap-6 p-6 mx-auto">
+      <section class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-blue-900">Aprovacoes</h1>
+          <p class="mt-1 text-sm text-slate-500">Justificativas de ajuste de ponto pendentes, aprovadas e reprovadas</p>
+        </div>
+        <button
+          type="button"
+          (click)="carregarAjustes()"
+          class="inline-flex items-center gap-2 rounded-lg bg-blue-900 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-blue-800 active:scale-95"
+        >
+          <span class="material-symbols-outlined text-[18px]">refresh</span>
+          Atualizar
+        </button>
+      </section>
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <button
+          type="button"
+          (click)="alterarAba('pendente')"
+          [class]="'rounded-xl border p-4 text-left transition-colors ' + (aba() === 'pendente' ? 'border-yellow-300 bg-yellow-50' : 'border-slate-200 bg-white hover:bg-slate-50')"
+        >
+          <p class="text-xs font-semibold uppercase text-slate-500">Pendentes</p>
+          <p class="mt-1 text-2xl font-bold text-yellow-800">{{ totalPendentes() }}</p>
+        </button>
+        <button
+          type="button"
+          (click)="alterarAba('aprovado')"
+          [class]="'rounded-xl border p-4 text-left transition-colors ' + (aba() === 'aprovado' ? 'border-green-300 bg-green-50' : 'border-slate-200 bg-white hover:bg-slate-50')"
+        >
+          <p class="text-xs font-semibold uppercase text-slate-500">Aprovadas</p>
+          <p class="mt-1 text-2xl font-bold text-green-700">{{ totalAprovados() }}</p>
+        </button>
+        <button
+          type="button"
+          (click)="alterarAba('rejeitado')"
+          [class]="'rounded-xl border p-4 text-left transition-colors ' + (aba() === 'rejeitado' ? 'border-red-300 bg-red-50' : 'border-slate-200 bg-white hover:bg-slate-50')"
+        >
+          <p class="text-xs font-semibold uppercase text-slate-500">Reprovadas</p>
+          <p class="mt-1 text-2xl font-bold text-red-700">{{ totalReprovados() }}</p>
+        </button>
+      </div>
+
+      @if (carregando()) {
+        <div class="flex justify-center py-16">
+          <span class="material-symbols-outlined animate-spin text-blue-600 text-4xl">progress_activity</span>
+        </div>
+      }
+
+      @if (!carregando() && erro()) {
+        <div class="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          <span class="material-symbols-outlined text-[18px]">error</span>
+          {{ erro() }}
+        </div>
+      }
+
+      @if (!carregando() && !erro()) {
+        <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+          <div class="border-b border-slate-200 bg-slate-50 px-4 py-3">
+            <h2 class="text-sm font-bold text-blue-900">
+              {{ aba() === 'pendente' ? 'Justificativas pendentes' : aba() === 'aprovado' ? 'Justificativas aprovadas' : 'Justificativas reprovadas' }}
+            </h2>
+          </div>
+
+          @if (ajustesFiltrados().length > 0) {
+            <div class="divide-y divide-slate-100">
+              @for (ajuste of ajustesFiltrados(); track ajuste.id) {
+                <article class="flex flex-col gap-4 p-4 md:flex-row md:items-center md:justify-between">
+                  <div class="flex min-w-0 gap-3">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-900 text-sm font-bold text-white">
+                      {{ iniciais(ajuste.colaborador.nome) }}
+                    </div>
+                    <div class="min-w-0">
+                      <div class="flex flex-wrap items-center gap-2">
+                        <p class="font-semibold text-slate-800 text-sm">{{ ajuste.colaborador.nome }}</p>
+                        <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500">{{ ajuste.colaborador.matricula }}</span>
+                        <span [class]="'rounded-full px-2 py-0.5 text-xs font-semibold ' + classeStatus(ajuste.status)">
+                          {{ labelStatus(ajuste.status) }}
+                        </span>
+                      </div>
+                      <p class="mt-1 text-xs text-slate-500">
+                        {{ ajuste.colaborador.cargo }} · {{ ajuste.colaborador.setor }} · {{ formatarData(ajuste.data) }}
+                      </p>
+                      <p class="mt-2 rounded-lg bg-slate-50 px-3 py-2 text-sm leading-5 text-slate-700">
+                        <span class="font-semibold text-slate-600">Motivo:</span>
+                        {{ ajuste.motivo }}
+                      </p>
+                      @if (ajuste.comentario) {
+                        <p class="mt-2 text-xs text-slate-500">Comentario: {{ ajuste.comentario }}</p>
+                      }
+                    </div>
+                  </div>
+
+                  @if (ajuste.status === 'pendente') {
+                    <div class="flex shrink-0 gap-2">
+                      <button
+                        type="button"
+                        (click)="aprovarAjuste(ajuste)"
+                        [disabled]="avaliandoAjusteId() === ajuste.id"
+                        class="inline-flex items-center justify-center gap-2 rounded-lg bg-green-50 px-3 py-2 text-sm font-semibold text-green-700 transition-colors hover:bg-green-100 disabled:opacity-60"
+                      >
+                        <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                        Aprovar
+                      </button>
+                      <button
+                        type="button"
+                        (click)="abrirReprovacao(ajuste)"
+                        [disabled]="avaliandoAjusteId() === ajuste.id"
+                        class="inline-flex items-center justify-center gap-2 rounded-lg bg-red-50 px-3 py-2 text-sm font-semibold text-red-600 transition-colors hover:bg-red-100 disabled:opacity-60"
+                      >
+                        <span class="material-symbols-outlined text-[18px]">cancel</span>
+                        Reprovar
+                      </button>
+                    </div>
+                  }
+                </article>
+              }
+            </div>
+          } @else {
+            <div class="flex items-center gap-3 px-4 py-8 text-sm text-slate-500">
+              <span class="material-symbols-outlined text-[20px] text-slate-400">mark_email_read</span>
+              Nenhuma justificativa nesta lista.
+            </div>
+          }
+        </section>
+      }
+    </div>
+  </main>
+</div>
+
+<app-bottom-nav />
+
+@if (ajusteReprovacao()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
+    <div class="w-full max-w-md rounded-2xl bg-white shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-200 px-6 py-4">
+        <div>
+          <h2 class="text-lg font-bold text-blue-900">Reprovar ajuste</h2>
+          <p class="mt-0.5 text-sm text-slate-500">{{ ajusteReprovacao()!.colaborador.nome }}</p>
+        </div>
+        <button
+          type="button"
+          (click)="fecharReprovacao()"
+          class="rounded-lg p-1 text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-600"
+          aria-label="Fechar"
+        >
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="flex flex-col gap-4 px-6 py-5">
+        @if (erroReprovacao()) {
+          <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">{{ erroReprovacao() }}</div>
+        }
+
+        <label class="flex flex-col gap-1">
+          <span class="text-xs font-semibold uppercase text-slate-500">Comentario</span>
+          <textarea
+            rows="4"
+            maxlength="255"
+            [value]="comentarioReprovacao()"
+            (input)="comentarioReprovacao.set($any($event.target).value)"
+            class="resize-none rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-blue-900 focus:ring-2 focus:ring-blue-900/20"
+            placeholder="Explique o motivo da reprovacao"
+          ></textarea>
+        </label>
+
+        <div class="flex gap-3 pt-1">
+          <button
+            type="button"
+            (click)="fecharReprovacao()"
+            class="flex-1 rounded-xl border border-slate-200 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            (click)="reprovarAjuste()"
+            [disabled]="avaliandoAjusteId() === ajusteReprovacao()!.id"
+            class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-red-600 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-700 disabled:opacity-60"
+          >
+            @if (avaliandoAjusteId() === ajusteReprovacao()!.id) {
+              <span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>
+            }
+            Reprovar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

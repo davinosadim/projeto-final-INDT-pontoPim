@@ -1,16 +1,10 @@
 import { Routes } from '@angular/router';
-import { MeuPonto } from './pages/meu-ponto/meu-ponto';
-import { Login } from './pages/login/login';
-import { DashboardGestor } from './pages/dashboard-gestor/dashboard-gestor';
-import { authGuard, publicGuard } from './guards/auth.guard';
+import { authChildGuard, authGuard, authMatchGuard, publicGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
 
-    { path: "meuPonto", component: MeuPonto},
-    { path: "auth/login", component: Login},
-    { path: "app/dashboard", component: DashboardGestor}
     {
         path: 'auth/login',
         canActivate: [publicGuard],
@@ -19,7 +13,9 @@ export const routes: Routes = [
 
     {
         path: 'app',
+        canMatch: [authMatchGuard],
         canActivate: [authGuard],
+        canActivateChild: [authChildGuard],
         children: [
             {
                 path: 'meu-ponto',
@@ -32,9 +28,19 @@ export const routes: Routes = [
                 loadComponent: () => import('./pages/equipe/equipe').then(m => m.Equipe)
             },
             {
+                path: 'aprovacoes',
+                canActivate: [roleGuard('gestor')],
+                loadComponent: () => import('./pages/aprovacoes/aprovacoes').then(m => m.Aprovacoes)
+            },
+            {
                 path: 'colaboradores',
                 canActivate: [roleGuard('rh')],
                 loadComponent: () => import('./pages/colaboradores/colaboradores').then(m => m.Colaboradores)
+            },
+            {
+                path: 'colaboradores/:id/ponto',
+                canActivate: [roleGuard('rh', 'gestor', 'colaborador')],
+                loadComponent: () => import('./pages/historico-ponto-colaborador/historico-ponto-colaborador').then(m => m.HistoricoPontoColaborador)
             },
             { path: '', redirectTo: 'meu-ponto', pathMatch: 'full' }
         ]

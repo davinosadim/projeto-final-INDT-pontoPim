@@ -71,6 +71,7 @@ export class Equipe implements OnInit {
                 this.carregando.set(false);
             }
         });
+
     }
 
     labelTipo(tipo: string): string {

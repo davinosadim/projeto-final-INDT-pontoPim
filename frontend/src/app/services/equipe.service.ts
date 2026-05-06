@@ -27,6 +27,23 @@ export interface ColaboradorEquipe {
     resumo: ResumoEquipe | null;
 }
 
+export type StatusAjustePonto = 'pendente' | 'aprovado' | 'rejeitado';
+
+export interface AjustePonto {
+    id: string;
+    data: string;
+    motivo: string;
+    status: StatusAjustePonto;
+    comentario: string | null;
+    colaborador: {
+        id: string;
+        nome: string;
+        matricula: string;
+        cargo: string;
+        setor: string;
+    };
+}
+
 interface ApiResponse<T> {
     status: string;
     data: T;
@@ -38,5 +55,18 @@ export class EquipeService {
 
     getEquipeHoje() {
         return this.http.get<ApiResponse<ColaboradorEquipe[]>>(`${environment.apiUrl}/equipe/hoje`);
+    }
+
+    getAjustesPonto(status?: StatusAjustePonto) {
+        return this.http.get<ApiResponse<AjustePonto[]>>(`${environment.apiUrl}/equipe/ajustes-ponto`, {
+            params: status ? { status } : {}
+        });
+    }
+
+    avaliarAjuste(ajusteId: string, status: 'aprovado' | 'rejeitado', comentario: string | null = null) {
+        return this.http.patch<ApiResponse<AjustePonto>>(`${environment.apiUrl}/equipe/ajustes-ponto/${ajusteId}`, {
+            status,
+            comentario
+        });
     }
 }
