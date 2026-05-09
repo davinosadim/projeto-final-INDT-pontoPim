@@ -5,10 +5,7 @@ import { RegistroPonto } from "../entities/RegistroPonto";
 import { AppError } from "../errors/AppError";
 import { Origem } from "../types/origem";
 import { TiposRegistros } from "../types/registros";
-import { StatusResumo } from "../types/statusResumo";
 import { calcularResumoPonto } from "../utils/resumoPonto";
-
-export type PeriodoHistoricoPonto = "semana" | "mes";
 
 function inicioDoDia(data: Date): Date {
     const d = new Date(data);
@@ -26,38 +23,22 @@ function dataLocalString(data: Date): string {
     return `${data.getFullYear()}-${String(data.getMonth() + 1).padStart(2, "0")}-${String(data.getDate()).padStart(2, "0")}`;
 }
 
-function calcularIntervalo(periodo: PeriodoHistoricoPonto) {
-    const hoje = inicioDoDia(new Date());
-    const inicio = new Date(hoje);
-
-    if (periodo === "mes") {
-        inicio.setDate(1);
-    } else {
-        const diaSemana = inicio.getDay();
-        const distanciaSegunda = diaSemana === 0 ? 6 : diaSemana - 1;
-        inicio.setDate(inicio.getDate() - distanciaSegunda);
-    }
-
-    return {
-        inicio: inicioDoDia(inicio),
-        fim: fimDoDia(hoje),
-    };
-}
-
-function listarDias(inicio: Date, fim: Date): string[] {
+function listarDiasUteisDoMes(ano: number, mes: number): string[] {
     const dias: string[] = [];
-    const cursor = inicioDoDia(inicio);
-    const limite = inicioDoDia(fim);
+    const cursor = new Date(ano, mes - 1, 1);
 
-    while (cursor <= limite) {
-        dias.push(dataLocalString(cursor));
+    while (cursor.getMonth() === mes - 1) {
+        const diaSemana = cursor.getDay();
+        if (diaSemana !== 0 && diaSemana !== 6) {
+            dias.push(dataLocalString(cursor));
+        }
         cursor.setDate(cursor.getDate() + 1);
     }
 
     return dias;
 }
 
-export class HistoricoPontoService {
+export class EspelhoPontoService {
     private colaboradorRepository: Repository<Colaborador>;
     private registroRepository: Repository<RegistroPonto>;
 
@@ -66,7 +47,8 @@ export class HistoricoPontoService {
         this.registroRepository = appDataSource.getRepository(RegistroPonto);
     }
 
-    async listarPorColaborador(colaboradorId: string, periodo: PeriodoHistoricoPonto = "semana") {
+    async gerarMensal(colaboradorId: string, mes: number) {
+        const ano = new Date().getFullYear();
         const colaborador = await this.colaboradorRepository.findOne({
             where: { id_colaborador: colaboradorId },
             relations: ["jornada"],
@@ -76,7 +58,8 @@ export class HistoricoPontoService {
             throw new AppError("Colaborador nao encontrado", 404);
         }
 
-        const { inicio, fim } = calcularIntervalo(periodo);
+        const inicio = inicioDoDia(new Date(ano, mes - 1, 1));
+        const fim = fimDoDia(new Date(ano, mes, 0));
         const registros = await this.registroRepository.find({
             where: {
                 colaborador: { id_colaborador: colaboradorId },
@@ -95,14 +78,21 @@ export class HistoricoPontoService {
 
         const cargaHorariaDia = Number(colaborador.jornada?.cargaHorariaDia ?? 8);
         const horarioEntrada = colaborador.jornada?.horarioEntrada ?? "08:00";
+        let totalMinutosTrabalhados = 0;
+        let totalHorasExtrasMinutos = 0;
+        let totalAtrasosMinutos = 0;
 
-        const dias = listarDias(inicio, fim).map(data => {
+        const dias = listarDiasUteisDoMes(ano, mes).map(data => {
             const registrosDoDia = registrosPorDia.get(data) ?? [];
             const resumo = calcularResumoPonto(registrosDoDia, cargaHorariaDia, horarioEntrada);
             const entrada = registrosDoDia.find(r => r.tipo === TiposRegistros.ENTRADA);
             const saidaAlmoco = registrosDoDia.find(r => r.tipo === TiposRegistros.SAIDA_ALMOCO);
             const retornoAlmoco = registrosDoDia.find(r => r.tipo === TiposRegistros.RETORNO_ALMOCO);
             const saida = registrosDoDia.find(r => r.tipo === TiposRegistros.SAIDA);
+
+            totalMinutosTrabalhados += resumo.minutosTrabalhados;
+            totalHorasExtrasMinutos += resumo.horasExtrasMinutos;
+            totalAtrasosMinutos += resumo.atrasoMinutos;
 
             return {
                 data,
@@ -122,11 +112,6 @@ export class HistoricoPontoService {
                 horasExtras: resumo.horasExtras,
                 atrasoMinutos: resumo.atrasoMinutos,
                 status: resumo.status,
-                destaque: resumo.status === StatusResumo.INCOMPLETO
-                    ? "incompleto"
-                    : resumo.atrasoMinutos > 0
-                        ? "atraso"
-                        : null,
             };
         });
 
@@ -134,13 +119,22 @@ export class HistoricoPontoService {
             colaborador: {
                 id: colaborador.id_colaborador,
                 nome: colaborador.nome,
-                email: colaborador.email,
                 matricula: colaborador.matricula,
+                setor: colaborador.setor,
             },
-            periodo,
-            inicio: dataLocalString(inicio),
-            fim: dataLocalString(fim),
+            referencia: {
+                mes,
+                ano,
+                inicio: dataLocalString(inicio),
+                fim: dataLocalString(fim),
+            },
             dias,
+            totais: {
+                horasTrabalhadas: Number((totalMinutosTrabalhados / 60).toFixed(2)),
+                horasExtras: Number((totalHorasExtrasMinutos / 60).toFixed(2)),
+                atrasoMinutos: totalAtrasosMinutos,
+                saldoBancoHorasMinutos: totalHorasExtrasMinutos - totalAtrasosMinutos,
+            },
         };
     }
 }

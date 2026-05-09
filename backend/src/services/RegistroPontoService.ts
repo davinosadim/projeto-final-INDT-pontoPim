@@ -4,8 +4,8 @@ import { Colaborador } from "../entities/Colaborador";
 import { ResumoDiario } from "../entities/ResumoDiario";
 import { appDataSource } from "../database/data-source";
 import { TiposRegistros } from "../types/registros";
-import { StatusResumo } from "../types/statusResumo";
 import { AppError } from "../errors/AppError";
+import { calcularResumoPonto } from "../utils/resumoPonto";
 
 const SEQUENCIA_BATIDAS = [
     TiposRegistros.ENTRADA,
@@ -29,55 +29,6 @@ function fimDoDia(): Date {
 function dataHojeString(): string {
     const now = new Date()
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`
-}
-
-function horarioParaMinutos(horario: string): number {
-    const [horas, minutos] = horario.split(":").map(Number)
-    return (horas ?? 0) * 60 + (minutos ?? 0)
-}
-
-function calcularResumo(
-    registros: RegistroPonto[],
-    cargaHorariaDia: number,
-    horarioEntrada: string
-) {
-    const entrada = registros.find(r => r.tipo === TiposRegistros.ENTRADA)
-    const saidaAlmoco = registros.find(r => r.tipo === TiposRegistros.SAIDA_ALMOCO)
-    const retornoAlmoco = registros.find(r => r.tipo === TiposRegistros.RETORNO_ALMOCO)
-    const saida = registros.find(r => r.tipo === TiposRegistros.SAIDA)
-
-    let horasTrabalhadas = 0
-
-    if (entrada && saida) {
-        const totalMs = saida.timestamp.getTime() - entrada.timestamp.getTime()
-        let almocoMs = 0
-        if (saidaAlmoco && retornoAlmoco) {
-            almocoMs = retornoAlmoco.timestamp.getTime() - saidaAlmoco.timestamp.getTime()
-        }
-        horasTrabalhadas = Math.max(0, (totalMs - almocoMs)) / (1000 * 60 * 60)
-    }
-
-    let atrasoMinutos = 0
-    if (entrada) {
-        const entradaMin = entrada.timestamp.getHours() * 60 + entrada.timestamp.getMinutes()
-        const esperadoMin = horarioParaMinutos(horarioEntrada)
-        atrasoMinutos = Math.max(0, entradaMin - esperadoMin)
-    }
-
-    const horasExtras = registros.length === 4
-        ? Math.max(0, horasTrabalhadas - cargaHorariaDia)
-        : 0
-
-    let status: StatusResumo
-    if (registros.length === 4) {
-        status = StatusResumo.COMPLETO
-    } else if (registros.length > 0) {
-        status = StatusResumo.INCOMPLETO
-    } else {
-        status = StatusResumo.FALTA
-    }
-
-    return { horasTrabalhadas, horasExtras, atrasoMinutos, status }
 }
 
 export class RegistroPontoService {
@@ -191,7 +142,7 @@ export class RegistroPontoService {
         const horarioEntrada = colaborador.jornada?.horarioEntrada ?? "08:00"
         const dataHoje = dataHojeString()
 
-        const { horasTrabalhadas, horasExtras, atrasoMinutos, status } = calcularResumo(
+        const { horasTrabalhadas, horasExtras, atrasoMinutos, status } = calcularResumoPonto(
             registros,
             cargaHorariaDia,
             horarioEntrada

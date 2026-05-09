@@ -18,6 +18,12 @@ export class AjustePonto {
     @Column({type: "varchar"})
     motivo!: string
 
+    @Column({ type: "jsonb", name: "batidas_originais", nullable: true })
+    batidasOriginais!: Record<string, string | null> | null
+
+    @Column({ type: "jsonb", name: "batidas_solicitadas", nullable: true })
+    batidasSolicitadas!: Record<string, string | null> | null
+
 
     @Column({type: "enum", enum: StatusAjuste})
     status!: StatusAjuste

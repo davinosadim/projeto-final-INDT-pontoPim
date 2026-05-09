@@ -21,6 +21,7 @@ export class AjustePontoController {
             colaboradorId: params.id,
             data: body.data,
             motivo: body.motivo,
+            batidasSolicitadas: body.batidasSolicitadas,
             solicitanteId: req.user.id,
             solicitantePerfil: req.user.perfil,
         });
@@ -32,6 +33,21 @@ export class AjustePontoController {
         const query = parseListarAjustePontoQuery(req.query);
 
         const ajustes = await this.service.listar(query.status);
+        return res.status(200).json({ status: "success", data: ajustes });
+    }
+
+    async listarPorColaborador(req: AuthRequest, res: Response) {
+        if (!req.user) {
+            throw new AppError("Autenticacao requerida", 401);
+        }
+
+        const params = parseCriarAjustePontoParams(req.params);
+        const ajustes = await this.service.listarPorColaborador(
+            params.id,
+            req.user.id,
+            req.user.perfil
+        );
+
         return res.status(200).json({ status: "success", data: ajustes });
     }
 
