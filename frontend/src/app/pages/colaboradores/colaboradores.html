@@ -32,7 +32,7 @@
   <div class="flex items-center justify-between">
     <div>
       <h1 class="text-2xl font-bold text-blue-900">Colaboradores</h1>
-      <p class="text-sm text-slate-500 mt-1">Gestão de usuários do sistema</p>
+      <p class="text-sm text-slate-500 mt-1">Gestão de colaboradores</p>
     </div>
     <button
       type="button"
@@ -127,6 +127,15 @@
                     title="Ver historico de ponto"
                   >
                     <span class="material-symbols-outlined text-[18px]">schedule</span>
+                  </button>
+                  <button
+                    type="button"
+                    (click)="abrirEspelho(colaborador)"
+                    class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700 transition-colors hover:bg-slate-200"
+                    aria-label="Ver espelho mensal"
+                    title="Ver espelho mensal"
+                  >
+                    <span class="material-symbols-outlined text-[18px]">article</span>
                   </button>
                   <button
                     type="button"

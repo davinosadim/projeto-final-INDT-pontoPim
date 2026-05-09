@@ -29,10 +29,19 @@ export interface ColaboradorEquipe {
 
 export type StatusAjustePonto = 'pendente' | 'aprovado' | 'rejeitado';
 
+export interface BatidasAjuste {
+    entrada: string | null;
+    saidaAlmoco: string | null;
+    retornoAlmoco: string | null;
+    saida: string | null;
+}
+
 export interface AjustePonto {
     id: string;
     data: string;
     motivo: string;
+    batidasOriginais: BatidasAjuste | null;
+    batidasSolicitadas: BatidasAjuste | null;
     status: StatusAjustePonto;
     comentario: string | null;
     colaborador: {

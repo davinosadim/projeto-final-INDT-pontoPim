@@ -28,6 +28,13 @@ export interface CreateColaboradorPayload {
 
 export type PeriodoHistoricoPonto = 'semana' | 'mes';
 
+export interface BatidasManuais {
+    entrada: boolean;
+    saidaAlmoco: boolean;
+    retornoAlmoco: boolean;
+    saida: boolean;
+}
+
 export interface HistoricoPontoDia {
     data: string;
     batidas: {
@@ -36,6 +43,7 @@ export interface HistoricoPontoDia {
         retornoAlmoco: string | null;
         saida: string | null;
     };
+    batidasManuais: BatidasManuais;
     horasTrabalhadas: number;
     horasExtras: number;
     atrasoMinutos: number;
@@ -56,15 +64,62 @@ export interface HistoricoPontoResponse {
     dias: HistoricoPontoDia[];
 }
 
+export interface EspelhoPontoDia {
+    data: string;
+    batidas: {
+        entrada: string | null;
+        saidaAlmoco: string | null;
+        retornoAlmoco: string | null;
+        saida: string | null;
+    };
+    batidasManuais: BatidasManuais;
+    horasTrabalhadas: number;
+    horasExtras: number;
+    atrasoMinutos: number;
+    status: 'completo' | 'incompleto' | 'falta' | 'afastamento';
+}
+
+export interface EspelhoPontoMensalResponse {
+    colaborador: {
+        id: string;
+        nome: string;
+        matricula: string;
+        setor: string;
+    };
+    referencia: {
+        mes: number;
+        ano: number;
+        inicio: string;
+        fim: string;
+    };
+    dias: EspelhoPontoDia[];
+    totais: {
+        horasTrabalhadas: number;
+        horasExtras: number;
+        atrasoMinutos: number;
+        saldoBancoHorasMinutos: number;
+    };
+}
+
 export interface SolicitarAjustePayload {
     data: string;
     motivo: string;
+    batidasSolicitadas: BatidasAjustePayload;
+}
+
+export interface BatidasAjustePayload {
+    entrada: string | null;
+    saidaAlmoco: string | null;
+    retornoAlmoco: string | null;
+    saida: string | null;
 }
 
 export interface AjustePontoResponse {
     id: string;
     data: string;
     motivo: string;
+    batidasOriginais: BatidasAjustePayload | null;
+    batidasSolicitadas: BatidasAjustePayload | null;
     status: 'pendente' | 'aprovado' | 'rejeitado';
 }
 
@@ -93,6 +148,10 @@ export class ColaboradorService {
         return this.http.get<ApiResponse<HistoricoPontoResponse>>(`${environment.apiUrl}/colaborador/${id}/ponto`, {
             params: { periodo }
         });
+    }
+
+    espelhoPontoMensal(id: string, mes: number) {
+        return this.http.get<ApiResponse<EspelhoPontoMensalResponse>>(`${environment.apiUrl}/colaborador/${id}/espelho/${mes}`);
     }
 
     solicitarAjustePonto(id: string, payload: SolicitarAjustePayload) {

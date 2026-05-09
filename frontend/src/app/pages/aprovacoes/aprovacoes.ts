@@ -104,8 +104,8 @@ export class Aprovacoes implements OnInit {
 
         this.avaliandoAjusteId.set(ajuste.id);
         this.equipeService.avaliarAjuste(ajuste.id, 'rejeitado', comentario).subscribe({
-            next: () => {
-                this.ajustes.update(lista => lista.filter(item => item.id !== ajuste.id));
+            next: (res) => {
+                this.atualizarAjuste(res.data);
                 this.avaliandoAjusteId.set(null);
                 this.fecharReprovacao();
                 this.mostrarMensagem(`Ajuste de ${ajuste.colaborador.nome} reprovado.`);
@@ -138,6 +138,14 @@ export class Aprovacoes implements OnInit {
         if (status === 'aprovado') return 'Aprovado';
         if (status === 'rejeitado') return 'Reprovado';
         return 'Pendente';
+    }
+
+    formatarBatida(valor: string | null | undefined): string {
+        return valor || '--:--';
+    }
+
+    alterouBatida(ajuste: AjustePonto, campo: 'entrada' | 'saidaAlmoco' | 'retornoAlmoco' | 'saida'): boolean {
+        return this.formatarBatida(ajuste.batidasOriginais?.[campo]) !== this.formatarBatida(ajuste.batidasSolicitadas?.[campo]);
     }
 
     formatarData(data: string): string {

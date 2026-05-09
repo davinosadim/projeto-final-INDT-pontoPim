@@ -1,0 +1,33 @@
+@media print {
+  :host {
+    color: #0f172a;
+  }
+
+  app-top-bar,
+  app-side-nav,
+  app-bottom-nav,
+  .no-print {
+    display: none !important;
+  }
+
+  main,
+  .print-sheet {
+    overflow: visible !important;
+  }
+
+  .print-sheet {
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  table {
+    min-width: 0 !important;
+    font-size: 11px;
+  }
+
+  th,
+  td {
+    padding: 7px 8px !important;
+  }
+}

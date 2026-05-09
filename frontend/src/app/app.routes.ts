@@ -33,6 +33,11 @@ export const routes: Routes = [
                 loadComponent: () => import('./pages/aprovacoes/aprovacoes').then(m => m.Aprovacoes)
             },
             {
+                path: 'ajustes',
+                canActivate: [roleGuard('gestor', 'rh')],
+                loadComponent: () => import('./pages/aprovacoes/aprovacoes').then(m => m.Aprovacoes)
+            },
+            {
                 path: 'colaboradores',
                 canActivate: [roleGuard('rh')],
                 loadComponent: () => import('./pages/colaboradores/colaboradores').then(m => m.Colaboradores)
@@ -41,6 +46,11 @@ export const routes: Routes = [
                 path: 'colaboradores/:id/ponto',
                 canActivate: [roleGuard('rh', 'gestor', 'colaborador')],
                 loadComponent: () => import('./pages/historico-ponto-colaborador/historico-ponto-colaborador').then(m => m.HistoricoPontoColaborador)
+            },
+            {
+                path: 'colaboradores/:id/espelho/:mes',
+                canActivate: [roleGuard('rh', 'gestor', 'colaborador')],
+                loadComponent: () => import('./pages/espelho-ponto-mensal/espelho-ponto-mensal').then(m => m.EspelhoPontoMensal)
             },
             { path: '', redirectTo: 'meu-ponto', pathMatch: 'full' }
         ]

@@ -35,6 +35,10 @@ export class HistoricoPontoColaborador implements OnInit {
     readonly erroAjuste = signal<string | null>(null);
     readonly diaAjuste = signal<HistoricoPontoDia | null>(null);
     readonly motivoAjuste = signal('');
+    readonly entradaAjuste = signal<string | null>(null);
+    readonly saidaAlmocoAjuste = signal<string | null>(null);
+    readonly retornoAlmocoAjuste = signal<string | null>(null);
+    readonly saidaAjuste = signal<string | null>(null);
     readonly solicitandoAjuste = signal(false);
     readonly historico = signal<HistoricoPontoResponse | null>(null);
 
@@ -78,9 +82,21 @@ export class HistoricoPontoColaborador implements OnInit {
         this.router.navigate(['/app/colaboradores']);
     }
 
+    emitirEspelhoPonto() {
+        const id = this.route.snapshot.paramMap.get('id');
+        if (!id) return;
+
+        const mesAtual = new Date().getMonth() + 1;
+        this.router.navigate(['/app/colaboradores', id, 'espelho', mesAtual]);
+    }
+
     abrirSolicitacaoAjuste(dia: HistoricoPontoDia) {
         this.diaAjuste.set(dia);
         this.motivoAjuste.set('');
+        this.entradaAjuste.set(this.valorHorarioInput(dia.batidas.entrada));
+        this.saidaAlmocoAjuste.set(this.valorHorarioInput(dia.batidas.saidaAlmoco));
+        this.retornoAlmocoAjuste.set(this.valorHorarioInput(dia.batidas.retornoAlmoco));
+        this.saidaAjuste.set(this.valorHorarioInput(dia.batidas.saida));
         this.erroAjuste.set(null);
     }
 
@@ -88,6 +104,10 @@ export class HistoricoPontoColaborador implements OnInit {
         if (this.solicitandoAjuste()) return;
         this.diaAjuste.set(null);
         this.motivoAjuste.set('');
+        this.entradaAjuste.set(null);
+        this.saidaAlmocoAjuste.set(null);
+        this.retornoAlmocoAjuste.set(null);
+        this.saidaAjuste.set(null);
         this.erroAjuste.set(null);
     }
 
@@ -103,10 +123,22 @@ export class HistoricoPontoColaborador implements OnInit {
             return;
         }
 
+        const batidasSolicitadas = {
+            entrada: this.normalizarHorarioInput(this.entradaAjuste()),
+            saidaAlmoco: this.normalizarHorarioInput(this.saidaAlmocoAjuste()),
+            retornoAlmoco: this.normalizarHorarioInput(this.retornoAlmocoAjuste()),
+            saida: this.normalizarHorarioInput(this.saidaAjuste()),
+        };
+
+        if (!Object.values(batidasSolicitadas).some(Boolean)) {
+            this.erroAjuste.set('Informe ao menos uma batida corrigida.');
+            return;
+        }
+
         this.solicitandoAjuste.set(true);
         this.erroAjuste.set(null);
 
-        this.colaboradorService.solicitarAjustePonto(id, { data: dia.data, motivo }).subscribe({
+        this.colaboradorService.solicitarAjustePonto(id, { data: dia.data, motivo, batidasSolicitadas }).subscribe({
             next: () => {
                 this.solicitandoAjuste.set(false);
                 this.fecharSolicitacaoAjuste();
@@ -139,6 +171,18 @@ export class HistoricoPontoColaborador implements OnInit {
         return 'bg-slate-100 text-slate-600';
     }
 
+    classeHorasExtras(horasExtras: number): string {
+        return horasExtras > 0 ? 'text-emerald-700' : 'text-slate-400';
+    }
+
+    classeAtraso(atrasoMinutos: number): string {
+        return atrasoMinutos > 0 ? 'text-orange-700' : 'text-slate-400';
+    }
+
+    classeBatidaManual(manual: boolean): string {
+        return manual ? 'underline decoration-black decoration-1 underline-offset-2' : '';
+    }
+
     labelStatus(status: HistoricoPontoDia['status']): string {
         return STATUS_LABELS[status];
     }
@@ -165,11 +209,32 @@ export class HistoricoPontoColaborador implements OnInit {
         return `${valor.toFixed(2).replace('.', ',')}h`;
     }
 
+    formatarHorasMinutos(valor: number): string {
+        const totalMinutos = Math.round(valor * 60);
+        const horas = Math.floor(totalMinutos / 60);
+        const minutos = totalMinutos % 60;
+        return `${horas}h ${String(minutos).padStart(2, '0')}min`;
+    }
+
     formatarAtraso(minutos: number): string {
-        if (minutos <= 0) return 'Sem atraso';
+        if (minutos <= 0) return '0min';
         const horas = Math.floor(minutos / 60);
         const resto = minutos % 60;
         if (horas === 0) return `${resto}min`;
         return `${horas}h ${String(resto).padStart(2, '0')}min`;
+    }
+
+    private valorHorarioInput(timestamp: string | null): string | null {
+        if (!timestamp) return null;
+        return new Date(timestamp).toLocaleTimeString('pt-BR', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+            timeZone: 'America/Manaus',
+        });
+    }
+
+    private normalizarHorarioInput(valor: string | null): string | null {
+        return valor?.trim() || null;
     }
 }

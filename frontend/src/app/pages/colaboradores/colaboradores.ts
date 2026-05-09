@@ -179,6 +179,11 @@ export class Colaboradores implements OnInit, OnDestroy {
         this.router.navigate(['/app/colaboradores', colaborador.id_colaborador, 'ponto']);
     }
 
+    abrirEspelho(colaborador: ColaboradorListItem) {
+        const mesAtual = new Date().getMonth() + 1;
+        this.router.navigate(['/app/colaboradores', colaborador.id_colaborador, 'espelho', mesAtual]);
+    }
+
     iniciais(nome: string): string {
         return nome.split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase();
     }

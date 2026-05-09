@@ -17,7 +17,7 @@ export class BottomNav {
         if (perfil === 'gestor') {
             return [
                 { label: 'Equipe', icon: 'groups', route: '/app/equipe' },
-                { label: 'Aprovacoes', icon: 'approval', route: '/app/aprovacoes' },
+                { label: 'Ajustes', icon: 'approval', route: '/app/ajustes' },
             ];
         }
         if (perfil === 'rh') {
