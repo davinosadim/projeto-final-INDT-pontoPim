@@ -8,6 +8,16 @@ function formatarHoras(horas: number): string {
     return `${String(h).padStart(2, '0')}h${String(m).padStart(2, '0')}m`;
 }
 
+function formatarMinutos(minutos: number): string {
+    if (minutos <= 0) return '00min';
+
+    const horas = Math.floor(minutos / 60);
+    const resto = minutos % 60;
+
+    if (horas === 0) return `${resto}min`;
+    return `${horas}h ${String(resto).padStart(2, '0')}min`;
+}
+
 @Component({
     selector: 'app-daily-summary',
     imports: [],
@@ -24,6 +34,7 @@ export class DailySummary {
     readonly horasTrabalhadasFmt = computed(() => formatarHoras(this.horasTrabalhadas()));
     readonly horasExtrasFmt = computed(() => formatarHoras(this.horasExtras()));
     readonly horasEsperadasFmt = computed(() => formatarHoras(this.horasEsperadas()));
+    readonly atrasoFmt = computed(() => formatarMinutos(this.atrasoMinutos()));
 
     readonly statusLabel = computed(() => {
         const map: Record<StatusResumo, string> = {

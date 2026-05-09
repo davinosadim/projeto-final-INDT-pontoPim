@@ -121,6 +121,7 @@ export interface AjustePontoResponse {
     batidasOriginais: BatidasAjustePayload | null;
     batidasSolicitadas: BatidasAjustePayload | null;
     status: 'pendente' | 'aprovado' | 'rejeitado';
+    comentario: string | null;
 }
 
 interface ApiResponse<T> {
@@ -156,5 +157,9 @@ export class ColaboradorService {
 
     solicitarAjustePonto(id: string, payload: SolicitarAjustePayload) {
         return this.http.post<ApiResponse<AjustePontoResponse>>(`${environment.apiUrl}/colaborador/${id}/ponto/ajustes`, payload);
+    }
+
+    listarAjustesPonto(id: string) {
+        return this.http.get<ApiResponse<AjustePontoResponse[]>>(`${environment.apiUrl}/colaborador/${id}/ponto/ajustes`);
     }
 }

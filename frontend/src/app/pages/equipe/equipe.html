@@ -117,7 +117,7 @@
                   <div class="text-center">
                     <p class="text-xs text-slate-400">Atraso</p>
                     <p class="text-sm font-bold" [class]="colaborador.resumo.atrasoMinutos > 0 ? 'text-red-500' : 'text-slate-400'">
-                      {{ colaborador.resumo.atrasoMinutos }}min
+                      {{ formatarMinutos(colaborador.resumo.atrasoMinutos) }}
                     </p>
                   </div>
                 </div>

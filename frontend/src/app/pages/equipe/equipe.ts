@@ -98,6 +98,16 @@ export class Equipe implements OnInit {
         return `${String(hh).padStart(2, '0')}h${String(mm).padStart(2, '0')}`;
     }
 
+    formatarMinutos(minutos: number): string {
+        if (minutos <= 0) return '0min';
+
+        const horas = Math.floor(minutos / 60);
+        const resto = minutos % 60;
+
+        if (horas === 0) return `${resto}min`;
+        return `${horas}h ${String(resto).padStart(2, '0')}min`;
+    }
+
     iniciais(nome: string): string {
         return nome.split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase();
     }

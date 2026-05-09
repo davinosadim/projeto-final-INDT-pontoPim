@@ -46,11 +46,7 @@
         [class.text-red-600]="temAtraso()"
         [class.text-slate-300]="!temAtraso()"
       >
-        @if (temAtraso()) {
-          {{ atrasoMinutos() }}min
-        } @else {
-          00min
-        }
+        {{ atrasoFmt() }}
       </span>
     </div>
 
