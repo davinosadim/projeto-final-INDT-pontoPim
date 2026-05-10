@@ -35,6 +35,7 @@ export class SideNav {
         }
         return [
             { label: 'Meu Ponto', icon: 'fingerprint', route: '/app/meu-ponto' },
+            { label: 'Justificativas', icon: 'assignment', route: '/app/justificativas' },
             { label: 'Historico', icon: 'history', route: usuario ? `/app/colaboradores/${usuario.id}/ponto` : '/app/meu-ponto' },
         ];
     });

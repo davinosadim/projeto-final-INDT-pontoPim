@@ -37,6 +37,8 @@ export interface BatidasManuais {
 
 export interface HistoricoPontoDia {
     data: string;
+    diaSemana: 'domingo' | 'segunda' | 'terca' | 'quarta' | 'quinta' | 'sexta' | 'sabado';
+    fimDeSemana: boolean;
     batidas: {
         entrada: string | null;
         saidaAlmoco: string | null;
@@ -47,7 +49,7 @@ export interface HistoricoPontoDia {
     horasTrabalhadas: number;
     horasExtras: number;
     atrasoMinutos: number;
-    status: 'completo' | 'incompleto' | 'falta' | 'afastamento';
+    status: 'completo' | 'incompleto' | 'falta' | 'afastamento' | 'fim_semana';
     destaque: 'incompleto' | 'atraso' | null;
 }
 

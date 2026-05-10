@@ -26,6 +26,24 @@ function dataLocalString(data: Date): string {
     return `${data.getFullYear()}-${String(data.getMonth() + 1).padStart(2, "0")}-${String(data.getDate()).padStart(2, "0")}`;
 }
 
+function dataLocalFromString(data: string): Date {
+    const partes = data.split("-").map(Number);
+    const ano = partes[0] ?? 0;
+    const mes = partes[1] ?? 1;
+    const dia = partes[2] ?? 1;
+    return new Date(ano, mes - 1, dia);
+}
+
+function nomeDiaSemana(data: string): string {
+    const diasSemana = ["domingo", "segunda", "terca", "quarta", "quinta", "sexta", "sabado"];
+    return diasSemana[dataLocalFromString(data).getDay()] ?? "segunda";
+}
+
+function ehFimDeSemana(data: string): boolean {
+    const diaSemana = dataLocalFromString(data).getDay();
+    return diaSemana === 0 || diaSemana === 6;
+}
+
 function calcularIntervalo(periodo: PeriodoHistoricoPonto) {
     const hoje = inicioDoDia(new Date());
     const inicio = new Date(hoje);
@@ -99,6 +117,10 @@ export class HistoricoPontoService {
         const dias = listarDias(inicio, fim).map(data => {
             const registrosDoDia = registrosPorDia.get(data) ?? [];
             const resumo = calcularResumoPonto(registrosDoDia, cargaHorariaDia, horarioEntrada);
+            const fimDeSemana = ehFimDeSemana(data);
+            const status = fimDeSemana && resumo.status === StatusResumo.FALTA
+                ? "fim_semana"
+                : resumo.status;
             const entrada = registrosDoDia.find(r => r.tipo === TiposRegistros.ENTRADA);
             const saidaAlmoco = registrosDoDia.find(r => r.tipo === TiposRegistros.SAIDA_ALMOCO);
             const retornoAlmoco = registrosDoDia.find(r => r.tipo === TiposRegistros.RETORNO_ALMOCO);
@@ -106,6 +128,8 @@ export class HistoricoPontoService {
 
             return {
                 data,
+                diaSemana: nomeDiaSemana(data),
+                fimDeSemana,
                 batidas: {
                     entrada: entrada?.timestamp ?? null,
                     saidaAlmoco: saidaAlmoco?.timestamp ?? null,
@@ -121,10 +145,10 @@ export class HistoricoPontoService {
                 horasTrabalhadas: resumo.horasTrabalhadas,
                 horasExtras: resumo.horasExtras,
                 atrasoMinutos: resumo.atrasoMinutos,
-                status: resumo.status,
-                destaque: resumo.status === StatusResumo.INCOMPLETO
+                status,
+                destaque: status === StatusResumo.INCOMPLETO
                     ? "incompleto"
-                    : resumo.atrasoMinutos > 0
+                    : !fimDeSemana && resumo.atrasoMinutos > 0
                         ? "atraso"
                         : null,
             };

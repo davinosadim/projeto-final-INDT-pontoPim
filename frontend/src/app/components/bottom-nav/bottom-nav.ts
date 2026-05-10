@@ -25,6 +25,7 @@ export class BottomNav {
         }
         return [
             { label: 'Ponto', icon: 'fingerprint', route: '/app/meu-ponto' },
+            { label: 'Justif.', icon: 'assignment', route: '/app/justificativas' },
             { label: 'Historico', icon: 'history', route: usuario ? `/app/colaboradores/${usuario.id}/ponto` : '/app/meu-ponto' },
         ];
     });

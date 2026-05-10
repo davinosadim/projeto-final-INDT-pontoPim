@@ -23,15 +23,20 @@ function dataLocalString(data: Date): string {
     return `${data.getFullYear()}-${String(data.getMonth() + 1).padStart(2, "0")}-${String(data.getDate()).padStart(2, "0")}`;
 }
 
-function listarDiasUteisDoMes(ano: number, mes: number): string[] {
+function listarDiasDoEspelho(inicio: Date, fim: Date, registrosPorDia: Map<string, RegistroPonto[]>): string[] {
     const dias: string[] = [];
-    const cursor = new Date(ano, mes - 1, 1);
+    const cursor = inicioDoDia(inicio);
+    const limite = inicioDoDia(fim);
 
-    while (cursor.getMonth() === mes - 1) {
+    while (cursor <= limite) {
+        const data = dataLocalString(cursor);
         const diaSemana = cursor.getDay();
-        if (diaSemana !== 0 && diaSemana !== 6) {
-            dias.push(dataLocalString(cursor));
+        const fimDeSemana = diaSemana === 0 || diaSemana === 6;
+
+        if (!fimDeSemana || (registrosPorDia.get(data)?.length ?? 0) > 0) {
+            dias.push(data);
         }
+
         cursor.setDate(cursor.getDate() + 1);
     }
 
@@ -59,7 +64,9 @@ export class EspelhoPontoService {
         }
 
         const inicio = inicioDoDia(new Date(ano, mes - 1, 1));
-        const fim = fimDoDia(new Date(ano, mes, 0));
+        const fimDoMes = fimDoDia(new Date(ano, mes, 0));
+        const hoje = fimDoDia(new Date());
+        const fim = fimDoMes > hoje ? hoje : fimDoMes;
         const registros = await this.registroRepository.find({
             where: {
                 colaborador: { id_colaborador: colaboradorId },
@@ -82,7 +89,7 @@ export class EspelhoPontoService {
         let totalHorasExtrasMinutos = 0;
         let totalAtrasosMinutos = 0;
 
-        const dias = listarDiasUteisDoMes(ano, mes).map(data => {
+        const dias = listarDiasDoEspelho(inicio, fim, registrosPorDia).map(data => {
             const registrosDoDia = registrosPorDia.get(data) ?? [];
             const resumo = calcularResumoPonto(registrosDoDia, cargaHorariaDia, horarioEntrada);
             const entrada = registrosDoDia.find(r => r.tipo === TiposRegistros.ENTRADA);

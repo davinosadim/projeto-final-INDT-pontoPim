@@ -4,7 +4,6 @@ import { TopBar } from '../../components/top-bar/top-bar';
 import { SideNav } from '../../components/side-nav/side-nav';
 import { BottomNav } from '../../components/bottom-nav/bottom-nav';
 import {
-    AjustePontoResponse,
     ColaboradorService,
     HistoricoPontoDia,
     HistoricoPontoResponse,
@@ -16,6 +15,17 @@ const STATUS_LABELS: Record<HistoricoPontoDia['status'], string> = {
     incompleto: 'Incompleto',
     falta: 'Falta',
     afastamento: 'Afastamento',
+    fim_semana: 'Fim de semana',
+};
+
+const DIA_SEMANA_LABELS: Record<HistoricoPontoDia['diaSemana'], string> = {
+    domingo: 'Domingo',
+    segunda: 'Segunda',
+    terca: 'Terca',
+    quarta: 'Quarta',
+    quinta: 'Quinta',
+    sexta: 'Sexta',
+    sabado: 'Sabado',
 };
 
 @Component({
@@ -42,25 +52,12 @@ export class HistoricoPontoColaborador implements OnInit {
     readonly saidaAjuste = signal<string | null>(null);
     readonly solicitandoAjuste = signal(false);
     readonly historico = signal<HistoricoPontoResponse | null>(null);
-    readonly carregandoAjustes = signal(false);
-    readonly erroAcompanhamento = signal<string | null>(null);
-    readonly ajustes = signal<AjustePontoResponse[]>([]);
-    readonly abaAjustes = signal<AjustePontoResponse['status'] | 'todos'>('todos');
 
     readonly colaborador = computed(() => this.historico()?.colaborador ?? null);
     readonly dias = computed(() => this.historico()?.dias ?? []);
-    readonly ajustesFiltrados = computed(() => {
-        const aba = this.abaAjustes();
-        if (aba === 'todos') return this.ajustes();
-        return this.ajustes().filter(ajuste => ajuste.status === aba);
-    });
-    readonly totalPendentes = computed(() => this.ajustes().filter(ajuste => ajuste.status === 'pendente').length);
-    readonly totalAprovados = computed(() => this.ajustes().filter(ajuste => ajuste.status === 'aprovado').length);
-    readonly totalReprovados = computed(() => this.ajustes().filter(ajuste => ajuste.status === 'rejeitado').length);
 
     ngOnInit() {
         this.carregarHistorico();
-        this.carregarAjustes();
     }
 
     carregarHistorico() {
@@ -82,25 +79,6 @@ export class HistoricoPontoColaborador implements OnInit {
             error: (err) => {
                 this.erro.set(err?.error?.message ?? 'Erro ao carregar historico de ponto.');
                 this.carregando.set(false);
-            }
-        });
-    }
-
-    carregarAjustes() {
-        const id = this.route.snapshot.paramMap.get('id');
-        if (!id) return;
-
-        this.carregandoAjustes.set(true);
-        this.erroAcompanhamento.set(null);
-
-        this.colaboradorService.listarAjustesPonto(id).subscribe({
-            next: (res) => {
-                this.ajustes.set(res.data);
-                this.carregandoAjustes.set(false);
-            },
-            error: (err) => {
-                this.erroAcompanhamento.set(err?.error?.message ?? 'Erro ao carregar solicitacoes.');
-                this.carregandoAjustes.set(false);
             }
         });
     }
@@ -175,7 +153,6 @@ export class HistoricoPontoColaborador implements OnInit {
             next: () => {
                 this.solicitandoAjuste.set(false);
                 this.fecharSolicitacaoAjuste();
-                this.carregarAjustes();
                 this.mensagem.set(`Solicitacao de ajuste enviada para ${this.formatarData(dia.data)}.`);
                 setTimeout(() => this.mensagem.set(null), 3500);
             },
@@ -187,6 +164,10 @@ export class HistoricoPontoColaborador implements OnInit {
     }
 
     classeLinha(dia: HistoricoPontoDia): string {
+        if (dia.fimDeSemana) {
+            return 'bg-slate-50 hover:bg-slate-100/70';
+        }
+
         if (dia.destaque === 'incompleto') {
             return 'bg-yellow-50 hover:bg-yellow-100/70';
         }
@@ -202,6 +183,7 @@ export class HistoricoPontoColaborador implements OnInit {
         if (status === 'completo') return 'bg-emerald-100 text-emerald-700';
         if (status === 'incompleto') return 'bg-yellow-100 text-yellow-800';
         if (status === 'falta') return 'bg-red-100 text-red-700';
+        if (status === 'fim_semana') return 'bg-slate-100 text-slate-600';
         return 'bg-slate-100 text-slate-600';
     }
 
@@ -217,38 +199,16 @@ export class HistoricoPontoColaborador implements OnInit {
         return manual ? 'underline decoration-black decoration-1 underline-offset-2' : '';
     }
 
-    labelStatus(status: HistoricoPontoDia['status']): string {
+    labelStatus(status: HistoricoPontoDia['status'], diaSemana?: HistoricoPontoDia['diaSemana']): string {
+        if (status === 'fim_semana' && diaSemana) {
+            return this.labelDiaSemana(diaSemana);
+        }
+
         return STATUS_LABELS[status];
     }
 
-    alterarAbaAjustes(aba: AjustePontoResponse['status'] | 'todos') {
-        this.abaAjustes.set(aba);
-    }
-
-    classeStatusAjuste(status: AjustePontoResponse['status']): string {
-        if (status === 'aprovado') return 'bg-emerald-100 text-emerald-700 border-emerald-200';
-        if (status === 'rejeitado') return 'bg-red-100 text-red-700 border-red-200';
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-    }
-
-    iconeStatusAjuste(status: AjustePontoResponse['status']): string {
-        if (status === 'aprovado') return 'task_alt';
-        if (status === 'rejeitado') return 'cancel';
-        return 'hourglass_top';
-    }
-
-    labelStatusAjuste(status: AjustePontoResponse['status']): string {
-        if (status === 'aprovado') return 'Aprovada';
-        if (status === 'rejeitado') return 'Reprovada';
-        return 'Pendente';
-    }
-
-    formatarBatidaAjuste(valor: string | null | undefined): string {
-        return valor || '--:--';
-    }
-
-    alterouBatida(ajuste: AjustePontoResponse, campo: 'entrada' | 'saidaAlmoco' | 'retornoAlmoco' | 'saida'): boolean {
-        return this.formatarBatidaAjuste(ajuste.batidasOriginais?.[campo]) !== this.formatarBatidaAjuste(ajuste.batidasSolicitadas?.[campo]);
+    labelDiaSemana(diaSemana: HistoricoPontoDia['diaSemana']): string {
+        return DIA_SEMANA_LABELS[diaSemana];
     }
 
     formatarData(data: string): string {

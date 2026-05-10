@@ -23,6 +23,11 @@ export const routes: Routes = [
                 loadComponent: () => import('./pages/meu-ponto/meu-ponto').then(m => m.MeuPonto)
             },
             {
+                path: 'justificativas',
+                canActivate: [roleGuard('colaborador')],
+                loadComponent: () => import('./pages/solicitacoes-justificativa/solicitacoes-justificativa').then(m => m.SolicitacoesJustificativa)
+            },
+            {
                 path: 'equipe',
                 canActivate: [roleGuard('gestor', 'rh')],
                 loadComponent: () => import('./pages/equipe/equipe').then(m => m.Equipe)
